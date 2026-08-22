@@ -12,7 +12,7 @@ er auf einen Blick auf den Screen passt.
 | Reiter | Inhalt |
 |---|---|
 | **Specials** | Alle Spezialangriffe mit Richtungspfeilen und den SNES-Knöpfen |
-| **Training** | Die Stärke des Charakters plus drei aufeinander aufbauende Übungen |
+| **Training** | Die Stärke des Charakters plus drei aufeinander aufbauende Übungen – jede mit den Eingaben, um die es geht |
 | **Tasten** | Knopfbelegung, Richtungs- und Ladebewegungs-Notation |
 
 Die Trainingsübungen sind bewusst als Reihenfolge nummeriert: Übung 1 legt die Grundlage,
@@ -73,6 +73,11 @@ die Seite enthält ausschließlich selbst geschriebene Inhalte, Zeichen und Farb
 - Eingaben sind Token-Listen: `D` Richtung, `C` Ladebewegung, `M` Bewegung als Text,
   `K` Knöpfe, `T` Zusatz. Eine Karte kann mit `seq2` eine zweite Eingabezeile zeigen
   (z. B. Dhalsims Teleport vor/zurück).
+- Trainingsübungen verweisen über `use` auf die Moves, deren Eingaben sie zeigen sollen –
+  per Move-Name, mit `#2` für dessen zweite Eingabezeile (z. B. `"Yoga Teleport#2"`).
+  Die Eingaben werden dort kompakter dargestellt (kleinere Felder, ohne den Zusatz
+  „eine davon"). Drei Übungen ohne festen Move (Kens Eckendruck, Dhalsims Abstandsrunde,
+  Vegas Klauendistanz) haben bewusst kein `use`.
 
 ### Wie „kein Scrollen" funktioniert
 

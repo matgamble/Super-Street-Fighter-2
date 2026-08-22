@@ -229,6 +229,19 @@ body{
 .drill .card-head{flex-wrap:nowrap; align-items:flex-start; gap:.4em}
 .drill .card-title{font-size:.9em}
 .drill .card-note{font-size:.8em; color:var(--text)}
+.use{display:flex; flex-direction:column; gap:.15em}
+.use-label{
+  font-size:.6em; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--gold);
+}
+.drill .seq{padding:.24em .26em; gap:.18em}
+.drill .seq .cap{display:none}
+.drill .dir{width:calc(var(--u) * 1.2); height:calc(var(--u) * 1.2)}
+.drill .dir svg{width:calc(var(--u) * .78); height:calc(var(--u) * .78)}
+.drill .key{width:calc(var(--u) * 1.1); height:calc(var(--u) * 1.1); font-size:calc(var(--u) * .66)}
+.drill .key.shoulder{width:calc(var(--u) * 1.3); height:calc(var(--u) * .86); font-size:calc(var(--u) * .56)}
+.drill .charge span{font-size:.58em}
+.drill .motion{font-size:.66em; padding:.24em .36em}
 
 /* ---------- Tastenbelegung ---------- */
 .keyrow{display:flex; align-items:center; gap:.45em}
@@ -347,9 +360,9 @@ const ROSTER = [
         note:"Geht auch im Sprung und bringt Ryu schnell durch den Screen."}
      ],
      drills:[
-       {n:"Takt brechen", t:"Zehn Feuerbälle mit bewusst ungleichen Pausen – mal sofort, mal nach zwei Sekunden. Wer immer im selben Takt wirft, wird übersprungen."},
-       {n:"Sprung abfangen", t:"Nur Feuerball werfen und warten. Sobald der Gegner abspringt: Shoryuken. Ziel sind zehn saubere Treffer hintereinander."},
-       {n:"Nach dem Sprung weitermachen", t:"Sprungkick, landen, geduckter schwacher Kick, Feuerball. Der Sprung ist der Anfang einer Folge, nicht das Ende."}
+       {n:"Takt brechen", t:"Zehn Feuerbälle mit bewusst ungleichen Pausen – mal sofort, mal nach zwei Sekunden. Wer immer im selben Takt wirft, wird übersprungen.", use:["Hadoken"]},
+       {n:"Sprung abfangen", t:"Nur Feuerball werfen und warten. Sobald der Gegner abspringt: Shoryuken. Ziel sind zehn saubere Treffer hintereinander.", use:["Shoryuken"]},
+       {n:"Nach dem Sprung weitermachen", t:"Sprungkick, landen, geduckter schwacher Kick, Feuerball. Der Sprung ist der Anfang einer Folge, nicht das Ende.", use:["Hadoken"]}
      ]},
 
     {id:"honda", name:"E. Honda", flag:"🇯🇵", land:"Japan", style:"Sumo",
@@ -363,9 +376,9 @@ const ROSTER = [
         note:"Springt hoch und landet mit dem Hintern – gut gegen Gegner, die unten campen."}
      ],
      drills:[
-       {n:"Ladung im Blocken", t:"Eine Runde nur rückwärts blocken – die Ladung läuft dabei mit. Nach jedem geblockten Angriff einen Headbutt herauslassen."},
-       {n:"Handschlag nur in Reichweite", t:"Hundred Hand Slap ausschließlich direkt am Gegner. Das Gefühl für „nah genug\" ist die eigentliche Übung."},
-       {n:"Über den Ducker", t:"Sumo Smash gegen einen Gegner, der unten blockt. Trainiert die zweite Ladung nach unten parallel zur ersten."}
+       {n:"Ladung im Blocken", t:"Eine Runde nur rückwärts blocken – die Ladung läuft dabei mit. Nach jedem geblockten Angriff einen Headbutt herauslassen.", use:["Sumo Headbutt"]},
+       {n:"Handschlag nur in Reichweite", t:"Hundred Hand Slap ausschließlich direkt am Gegner. Das Gefühl für „nah genug\" ist die eigentliche Übung.", use:["Hundred Hand Slap"]},
+       {n:"Über den Ducker", t:"Sumo Smash gegen einen Gegner, der unten blockt. Trainiert die zweite Ladung nach unten parallel zur ersten.", use:["Sumo Smash"]}
      ]},
 
     {id:"blanka", name:"Blanka", flag:"🇧🇷", land:"Brasilien", style:"Wildkampf",
@@ -381,9 +394,9 @@ const ROSTER = [
         note:"Trifft direkt vor Blanka und schlägt Sprünge aus der Luft."}
      ],
      drills:[
-       {n:"Rolle nur als Antwort", t:"Rolling Attack ausschließlich, wenn der Gegner einen Feuerball wirft. Blind gerollt heißt geblockt und bestraft."},
-       {n:"Elektro als Dach", t:"Den Gegner anspringen lassen und Electric Thunder auslösen, bevor er landet. Knopf hämmern, nicht drücken."},
-       {n:"Rückwärts denken", t:"Backstep Roll üben, bis er als Ausweichmanöver sitzt: erst zurück aus der Gefahr, dann hinein."}
+       {n:"Rolle nur als Antwort", t:"Rolling Attack ausschließlich, wenn der Gegner einen Feuerball wirft. Blind gerollt heißt geblockt und bestraft.", use:["Rolling Attack"]},
+       {n:"Elektro als Dach", t:"Den Gegner anspringen lassen und Electric Thunder auslösen, bevor er landet. Knopf hämmern, nicht drücken.", use:["Electric Thunder"]},
+       {n:"Rückwärts denken", t:"Backstep Roll üben, bis er als Ausweichmanöver sitzt: erst zurück aus der Gefahr, dann hinein.", use:["Backstep Roll"]}
      ]},
 
     {id:"guile", name:"Guile", flag:"🇺🇸", land:"USA", style:"Military Martial Arts",
@@ -395,9 +408,9 @@ const ROSTER = [
         note:"Der klassische Anti-Air. Ladung halten, bis der Gegner springt."}
      ],
      drills:[
-       {n:"Eine Runde in der Hocke", t:"Geduckt-rückwärts sitzen bleiben und nur Sonic Boom werfen. Beide Ladungen laufen dabei gleichzeitig mit."},
-       {n:"Hinter dem Boom herlaufen", t:"Boom werfen und sofort hinterhergehen. Der Gegner muss blocken – dann Wurf oder tiefer Kick."},
-       {n:"Flash Kick nur auf Sprünge", t:"Zehn Sprünge des Gegners abfangen, ohne ein einziges Mal blind zu treten."}
+       {n:"Eine Runde in der Hocke", t:"Geduckt-rückwärts sitzen bleiben und nur Sonic Boom werfen. Beide Ladungen laufen dabei gleichzeitig mit.", use:["Sonic Boom"]},
+       {n:"Hinter dem Boom herlaufen", t:"Boom werfen und sofort hinterhergehen. Der Gegner muss blocken – dann Wurf oder tiefer Kick.", use:["Sonic Boom"]},
+       {n:"Flash Kick nur auf Sprünge", t:"Zehn Sprünge des Gegners abfangen, ohne ein einziges Mal blind zu treten.", use:["Somersault Kick"]}
      ]},
 
     {id:"ken", name:"Ken", flag:"🇺🇸", land:"USA", style:"Ansatsuken",
@@ -411,8 +424,8 @@ const ROSTER = [
         note:"Auch in der Luft. Schließt schnell Distanz."}
      ],
      drills:[
-       {n:"Drachenfaust aus dem Lauf", t:"Vorwärtsgehen, dann sofort die Drachenfaust-Eingabe mit starkem Punch. Ohne Anlauf, ohne Vorbereitung – zehnmal sauber."},
-       {n:"Sprung rein, Faust raus", t:"Sprungkick, landen, sofort Shoryuken. Das ist Kens größtes Schadensfenster."},
+       {n:"Drachenfaust aus dem Lauf", t:"Vorwärtsgehen, dann sofort die Drachenfaust-Eingabe mit starkem Punch. Ohne Anlauf, ohne Vorbereitung – zehnmal sauber.", use:["Shoryuken"]},
+       {n:"Sprung rein, Faust raus", t:"Sprungkick, landen, sofort Shoryuken. Das ist Kens größtes Schadensfenster.", use:["Shoryuken"]},
        {n:"Eckendruck", t:"Gegner in die Ecke drängen, dann abwechseln zwischen tiefem Kick und Wurf. Nie zweimal dasselbe hintereinander."}
      ]},
 
@@ -429,9 +442,9 @@ const ROSTER = [
         note:"Springt vom Kopf des Gegners ab – direkt danach nochmal Kick für den Nachschlag."}
      ],
      drills:[
-       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten: das lädt Kikoken und Spinning Bird zusammen auf. Abwechselnd auslösen, ohne die Deckung zu verlassen."},
-       {n:"Beine auf Knopfdruck", t:"Kick-Knopf eine Sekunde lang hämmern, bis die Lightning Legs zuverlässig kommen. Erst dann im Kampf einsetzen."},
-       {n:"Von oben nerven", t:"Head Stomp und direkt wieder abspringen, ohne zu landen. Der Gegner kommt nicht zum Zug."}
+       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten: das lädt Kikoken und Spinning Bird zusammen auf. Abwechselnd auslösen, ohne die Deckung zu verlassen.", use:["Kikoken", "Spinning Bird Kick"]},
+       {n:"Beine auf Knopfdruck", t:"Kick-Knopf eine Sekunde lang hämmern, bis die Lightning Legs zuverlässig kommen. Erst dann im Kampf einsetzen.", use:["Hyakuretsukyaku"]},
+       {n:"Von oben nerven", t:"Head Stomp und direkt wieder abspringen, ohne zu landen. Der Gegner kommt nicht zum Zug.", use:["Head Stomp"]}
      ]},
 
     {id:"zangief", name:"Zangief", flag:"🇷🇺", land:"Russland", style:"Wrestling",
@@ -447,9 +460,9 @@ const ROSTER = [
         note:"Alle drei Kicks: kürzer und schneller als der Double Lariat."}
      ],
      drills:[
-       {n:"Drehen ohne Springen", t:"Die 360°-Drehung zügig ausführen und den Punch drücken, bevor die Figur abhebt. Zehnmal ohne einen einzigen Sprung."},
-       {n:"Lariat als Dach", t:"Alle drei Punches, sobald jemand springt. Zangiefs bester Anti-Air – und er braucht keine Ladung dafür."},
-       {n:"Kleben bleiben", t:"Geblockter schwacher Angriff, direkt danach der Griff. Der Gegner rechnet mit dem nächsten Schlag, nicht mit dem Wurf."}
+       {n:"Drehen ohne Springen", t:"Die 360°-Drehung zügig ausführen und den Punch drücken, bevor die Figur abhebt. Zehnmal ohne einen einzigen Sprung.", use:["Spinning Piledriver"]},
+       {n:"Lariat als Dach", t:"Alle drei Punches, sobald jemand springt. Zangiefs bester Anti-Air – und er braucht keine Ladung dafür.", use:["Double Lariat"]},
+       {n:"Kleben bleiben", t:"Geblockter schwacher Angriff, direkt danach der Griff. Der Gegner rechnet mit dem nächsten Schlag, nicht mit dem Wurf.", use:["Spinning Piledriver"]}
      ]},
 
     {id:"dhalsim", name:"Dhalsim", flag:"🇮🇳", land:"Indien", style:"Yoga",
@@ -468,8 +481,8 @@ const ROSTER = [
      ],
      drills:[
        {n:"Eine Runde auf Abstand", t:"Nur gestreckte Arme und Beine benutzen, kein einziger Nahkampf-Angriff. Trainiert das Gefühl für die eigene Reichweite."},
-       {n:"Feuer als Vorhut", t:"Yoga Fire werfen und dahinter nachrücken. Dass der Ball langsam ist, ist hier der Vorteil."},
-       {n:"Ecke verlassen", t:"In der Ecke den Teleport nach hinten üben. Beim Auftauchen ist Dhalsim kurz offen – solange, bis das Timing sitzt."}
+       {n:"Feuer als Vorhut", t:"Yoga Fire werfen und dahinter nachrücken. Dass der Ball langsam ist, ist hier der Vorteil.", use:["Yoga Fire"]},
+       {n:"Ecke verlassen", t:"In der Ecke den Teleport nach hinten üben. Beim Auftauchen ist Dhalsim kurz offen – solange, bis das Timing sitzt.", use:["Yoga Teleport#2"]}
      ]}
   ]},
 
@@ -486,9 +499,9 @@ const ROSTER = [
         note:"Halbkreis vorwärts. Die Y-Version läuft durch Feuerbälle hindurch."}
      ],
      drills:[
-       {n:"Spiral Arrow nur als Abschluss", t:"Nie zum Eröffnen benutzen, nur um eine Folge zu beenden. Geblockt steht Cammy sonst im Nachteil."},
-       {n:"Cannon Spike als Dach", t:"Zehn Sprünge abfangen. Dieselbe Eingabe wie ein Shoryuken, nur mit Kick – bis die Bewegung ohne Nachdenken kommt."},
-       {n:"Durch den Feuerball", t:"Spin Knuckle mit dem schwachen Punch gegen einen Feuerball-Gegner. Nur die Y-Version geht hindurch."}
+       {n:"Spiral Arrow nur als Abschluss", t:"Nie zum Eröffnen benutzen, nur um eine Folge zu beenden. Geblockt steht Cammy sonst im Nachteil.", use:["Spiral Arrow"]},
+       {n:"Cannon Spike als Dach", t:"Zehn Sprünge abfangen. Dieselbe Eingabe wie ein Shoryuken, nur mit Kick – bis die Bewegung ohne Nachdenken kommt.", use:["Cannon Spike"]},
+       {n:"Durch den Feuerball", t:"Spin Knuckle mit dem schwachen Punch gegen einen Feuerball-Gegner. Nur die Y-Version geht hindurch.", use:["Axel Spin Knuckle"]}
      ]},
 
     {id:"thawk", name:"T. Hawk", flag:"🇲🇽", land:"Mexiko", style:"Thunderfoot-Stil",
@@ -502,9 +515,9 @@ const ROSTER = [
         note:"Alle drei Punches in der Luft: stürzt schräg nach unten auf den Gegner."}
      ],
      drills:[
-       {n:"Drehen ohne Springen", t:"Wie bei Zangief: die 360°-Drehung zügig, den Punch vor dem Absprung. Zehnmal ohne Sprung."},
-       {n:"Von oben angreifen", t:"Condor Dive aus dem Sprung statt eines normalen Sprungkicks. Genau damit rechnet der Gegner nicht."},
-       {n:"Buster als Dach", t:"Tomahawk Buster nur gegen Springer, nie blind. Er hat die Reichweite dafür – aber nur nach oben."}
+       {n:"Drehen ohne Springen", t:"Wie bei Zangief: die 360°-Drehung zügig, den Punch vor dem Absprung. Zehnmal ohne Sprung.", use:["Mexican Typhoon"]},
+       {n:"Von oben angreifen", t:"Condor Dive aus dem Sprung statt eines normalen Sprungkicks. Genau damit rechnet der Gegner nicht.", use:["Condor Dive"]},
+       {n:"Buster als Dach", t:"Tomahawk Buster nur gegen Springer, nie blind. Er hat die Reichweite dafür – aber nur nach oben.", use:["Tomahawk Buster"]}
      ]},
 
     {id:"feilong", name:"Fei Long", flag:"🇭🇰", land:"Hongkong", style:"Kung Fu",
@@ -516,9 +529,9 @@ const ROSTER = [
         note:"Umgekehrte Drachenfaust-Bewegung, also nach hinten. Fei Longs Anti-Air."}
      ],
      drills:[
-       {n:"Serie sauber durchziehen", t:"Rekkaken dreimal hintereinander, ohne dass die Eingabe stockt. Erst die Mechanik, dann der Kampf."},
-       {n:"Nach dem Zweiten stoppen", t:"Bewusst abbrechen. Wer immer alle drei zieht, wird berechenbar und nach dem dritten Schlag bestraft."},
-       {n:"Rückwärts-Drachenfaust", t:"Der Shienkyaku hat die spiegelverkehrte Eingabe. Zehn Anti-Airs, bis die Richtung sitzt."}
+       {n:"Serie sauber durchziehen", t:"Rekkaken dreimal hintereinander, ohne dass die Eingabe stockt. Erst die Mechanik, dann der Kampf.", use:["Rekkaken"]},
+       {n:"Nach dem Zweiten stoppen", t:"Bewusst abbrechen. Wer immer alle drei zieht, wird berechenbar und nach dem dritten Schlag bestraft.", use:["Rekkaken"]},
+       {n:"Rückwärts-Drachenfaust", t:"Der Shienkyaku hat die spiegelverkehrte Eingabe. Zehn Anti-Airs, bis die Richtung sitzt.", use:["Shienkyaku"]}
      ]},
 
     {id:"deejay", name:"Dee Jay", flag:"🇯🇲", land:"Jamaika", style:"Kickboxen",
@@ -532,9 +545,9 @@ const ROSTER = [
         note:"Salto nach oben, Dee Jays Anti-Air."}
      ],
      drills:[
-       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten und abwechselnd Air Slasher und Jackknife auslösen, ohne die Deckung zu verlassen."},
-       {n:"Slasher, dann nachsetzen", t:"Air Slasher werfen und sofort den Dread Kick hinterher. Der Gegner blockt noch, wenn der Tritt ankommt."},
-       {n:"Jackknife nur oben", t:"Zehn Sprünge abfangen, ohne einmal ins Leere zu treten."}
+       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten und abwechselnd Air Slasher und Jackknife auslösen, ohne die Deckung zu verlassen.", use:["Air Slasher", "Jackknife Maximum"]},
+       {n:"Slasher, dann nachsetzen", t:"Air Slasher werfen und sofort den Dread Kick hinterher. Der Gegner blockt noch, wenn der Tritt ankommt.", use:["Air Slasher", "Double Rolling Sobat"]},
+       {n:"Jackknife nur oben", t:"Zehn Sprünge abfangen, ohne einmal ins Leere zu treten.", use:["Jackknife Maximum"]}
      ]}
   ]},
 
@@ -557,9 +570,9 @@ const ROSTER = [
         note:"Alle drei Punches (oder Kicks) halten. Je länger gehalten, desto stärker."}
      ],
      drills:[
-       {n:"Hoch und tief mischen", t:"Dash Straight abwechselnd auf vorwärts und auf schräg-unten enden lassen. Der Gegner muss raten, wo er blockt."},
-       {n:"Turn Punch im Blocken laden", t:"Alle drei Punches gedrückt halten, während man blockt. Loslassen, sobald der Gegner sich vorwagt."},
-       {n:"Kopfstoß als Notausgang", t:"Buffalo Head aus dem Druck heraus. Er ist beim Start unverwundbar – aber nur, wenn die Ladung steht."}
+       {n:"Hoch und tief mischen", t:"Dash Straight abwechselnd auf vorwärts und auf schräg-unten enden lassen. Der Gegner muss raten, wo er blockt.", use:["Dash Straight", "Dash tief"]},
+       {n:"Turn Punch im Blocken laden", t:"Alle drei Punches gedrückt halten, während man blockt. Loslassen, sobald der Gegner sich vorwagt.", use:["Turn Punch"]},
+       {n:"Kopfstoß als Notausgang", t:"Buffalo Head aus dem Druck heraus. Er ist beim Start unverwundbar – aber nur, wenn die Ladung steht.", use:["Buffalo Head"]}
      ]},
 
     {id:"vega", name:"Vega", flag:"🇪🇸", land:"Spanien", style:"Stierkampf & Ninjutsu",
@@ -576,8 +589,8 @@ const ROSTER = [
      ],
      drills:[
        {n:"Auf Klauendistanz bleiben", t:"Eine Runde nur auf maximaler Reichweite angreifen und nie nachrücken. Vegas Angriffe treffen weiter, als es aussieht."},
-       {n:"Izuna treffen", t:"Flying Barcelona, dann Punch direkt am Gegner. Zehn erfolgreiche Griffe – das Timing ist die ganze Übung."},
-       {n:"Backflip statt Block", t:"Den Rückwärtssalto zum Ausweichen benutzen. Vega ist schnell genug, danach sofort wieder anzugreifen."}
+       {n:"Izuna treffen", t:"Flying Barcelona, dann Punch direkt am Gegner. Zehn erfolgreiche Griffe – das Timing ist die ganze Übung.", use:["Flying Barcelona"]},
+       {n:"Backflip statt Block", t:"Den Rückwärtssalto zum Ausweichen benutzen. Vega ist schnell genug, danach sofort wieder anzugreifen.", use:["Backflip"]}
      ]},
 
     {id:"sagat", name:"Sagat", flag:"🇹🇭", land:"Thailand", style:"Muay Thai",
@@ -593,9 +606,9 @@ const ROSTER = [
         note:"Springt mit dem Knie voran nach vorn. Gleiche Bewegung wie der Uppercut, nur mit Kick."}
      ],
      drills:[
-       {n:"Oben und unten mischen", t:"Tiger Shot abwechselnd hoch und tief. Der Gegner muss ständig die Deckung wechseln – genau davon lebt Sagat."},
-       {n:"Uppercut nur nach oben", t:"Zehn Sprünge abfangen. Er hat die größte Reichweite im Spiel, blind ausgeführt ist er trotzdem der eigene Untergang."},
-       {n:"Knie zum Aufholen", t:"Tiger Knee benutzen, um Distanz zu schließen, wenn der Gegner Richtung Ecke ausweicht."}
+       {n:"Oben und unten mischen", t:"Tiger Shot abwechselnd hoch und tief. Der Gegner muss ständig die Deckung wechseln – genau davon lebt Sagat.", use:["Tiger Shot (hoch)", "Low Tiger Shot"]},
+       {n:"Uppercut nur nach oben", t:"Zehn Sprünge abfangen. Er hat die größte Reichweite im Spiel, blind ausgeführt ist er trotzdem der eigene Untergang.", use:["Tiger Uppercut"]},
+       {n:"Knie zum Aufholen", t:"Tiger Knee benutzen, um Distanz zu schließen, wenn der Gegner Richtung Ecke ausweicht.", use:["Tiger Knee"]}
      ]},
 
     {id:"bison", name:"M. Bison", flag:"🇹🇭", land:"Thailand", style:"Psycho Power",
@@ -611,9 +624,9 @@ const ROSTER = [
         note:"Fliegt über den Gegner hinweg. Punch drücken für den Schlag nach unten."}
      ],
      drills:[
-       {n:"Scissor statt Crusher", t:"Eine Runde nur Double Knee Press. Er ist schneller und sicherer als der Psycho Crusher – und trifft zweimal."},
-       {n:"Kopfsprung-Kette", t:"Head Press, dann Punch für den Skull Diver. Zehnmal die ganze Kette ohne Aussetzer."},
-       {n:"Ladung im Blocken", t:"Rückwärts blocken hält die Ladung. Sofort nach dem geblockten Angriff kontern, bevor der Gegner nachsetzt."}
+       {n:"Scissor statt Crusher", t:"Eine Runde nur Double Knee Press. Er ist schneller und sicherer als der Psycho Crusher – und trifft zweimal.", use:["Double Knee Press"]},
+       {n:"Kopfsprung-Kette", t:"Head Press, dann Punch für den Skull Diver. Zehnmal die ganze Kette ohne Aussetzer.", use:["Head Press"]},
+       {n:"Ladung im Blocken", t:"Rückwärts blocken hält die Ladung. Sofort nach dem geblockten Angriff kontern, bevor der Gegner nachsetzt.", use:["Double Knee Press"]}
      ]}
   ]}
 ];
@@ -714,6 +727,17 @@ function viewTraining(f){
     head.appendChild(el("h2","card-title", d.n));
     card.appendChild(head);
     card.appendChild(el("p","card-note", d.t));
+    (d.use || []).forEach(ref => {
+      const [name, which] = ref.split("#");
+      const mv = f.moves.find(m => m.n === name);
+      if(!mv) return;
+      const seq = which === "2" ? mv.seq2 : mv.seq;
+      if(!seq) return;
+      const wrap = el("div","use");
+      wrap.appendChild(el("span","use-label", mv.n));
+      wrap.appendChild(renderSeq(seq));
+      card.appendChild(wrap);
+    });
     out.push(card);
   });
   return out;
