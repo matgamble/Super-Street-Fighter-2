@@ -34,6 +34,9 @@ schieben.
 - **Vollbild.** Status- und Navigationsleiste sind ausgeblendet, der Screen ist
   knapp genug.
 - **Bildschirm bleibt an,** solange die App vorne ist.
+- **Zurück-Taste** geht innerhalb der Seite zurück: erst die Charakterauswahl
+  schließen, dann zum Titelbildschirm; erst danach beendet sich die App.
+  `MainActivity.onBackPressed()` fragt dafür `window.__back()` in der Seite.
 - **Systemweite Schriftvergrößerung wird ignoriert** (`setTextZoom(100)`).
   Sonst würde die Seite zweimal skaliert – einmal von Android, einmal von
   ihrer eigenen `fit()`-Routine – und passte nicht mehr auf den Screen.

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -49,6 +50,28 @@ public class MainActivity extends Activity {
         } else {
             web.restoreState(state);
         }
+    }
+
+    /**
+     * Die Zurück-Taste des Geräts geht erst innerhalb der Seite zurück –
+     * offene Charakterauswahl schließen, dann zum Titelbildschirm. Erst wenn
+     * dort nichts mehr zurückzugehen ist, wird die App beendet.
+     *
+     * Bewusst eine anonyme Klasse statt eines Lambdas: der hier benutzte Dexer
+     * (dx) übersetzt invokedynamic nicht.
+     */
+    @Override
+    public void onBackPressed() {
+        web.evaluateJavascript(
+                "(window.__back && window.__back()) ? 'ja' : 'nein'",
+                new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        if (value == null || !value.contains("ja")) {
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override

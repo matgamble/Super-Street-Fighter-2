@@ -7,16 +7,24 @@ Gebaut für den unteren Bildschirm des **AYN Thor** (3,92", 1080 × 1240): oben 
 Spiel, unten liegt die Seite. Sie **scrollt nicht** – der Inhalt skaliert sich so, dass
 er auf einen Blick auf den Screen passt.
 
-## Drei Ansichten
+## Aufbau
 
-| Reiter | Inhalt |
+Beim Start steht ein Titelbildschirm mit eigener Arcade-Grafik (Strahlenkranz und
+Rasterpunkte auf Canvas gezeichnet, Logo aus Schrift und Verlauf gesetzt – keine
+fremden Bilder, alles selbst gebaut). Darunter die Bereiche:
+
+| Bereich | Inhalt |
 |---|---|
 | **Specials** | Alle Spezialangriffe mit Richtungspfeilen und den SNES-Knöpfen |
 | **Training** | Die Stärke des Charakters plus drei aufeinander aufbauende Übungen – jede mit den Eingaben, um die es geht |
+| **Trainingsplan** | Dieselben Übungen zum Abhaken, mit Fortschrittsbalken; der Stand wird pro Charakter gespeichert |
+| **Grundlagen** | Anti-Air, Abstand, Blocken, Werfen, Ladung, Aufstehen, Feuerball-Krieg, Bestrafen – gilt für alle Charaktere |
 | **Tasten** | Knopfbelegung, Richtungs- und Ladebewegungs-Notation |
 
 Die Trainingsübungen sind bewusst als Reihenfolge nummeriert: Übung 1 legt die Grundlage,
-Übung 3 setzt sie im Kampf ein.
+Übung 3 setzt sie im Kampf ein. Der Trainingsplan entsteht aus genau diesen Daten – erst
+alle Eingaben sauber ausführen, dann die drei Übungen, zum Schluss ein Match, in dem die
+letzte Übung bewusst eingesetzt wird.
 
 ## Benutzen
 
@@ -35,13 +43,14 @@ Die Trainingsübungen sind bewusst als Reihenfolge nummeriert: Übung 1 legt die
 
 | | |
 |---|---|
+| Bereich öffnen | Kachel auf dem Titelbildschirm antippen |
+| Zurück zum Titel | Haus-Symbol oben links (in der App auch die Zurück-Taste) |
 | Charakter wechseln | `‹` / `›` oder auf den Namen tippen (Vollbild-Auswahl) |
-| Ansicht wechseln | die drei Reiter |
 | Vollbild | `⛶` oben rechts |
-| Tastatur | `←` `→` Charakter, `1` `2` `3` Ansicht, `Esc` Auswahl schließen |
+| Tastatur | `1`–`5` Bereich, `←` `→` Charakter, `Esc` zurück |
 
-Charakter und zuletzt gewählte Ansicht werden im Browser gespeichert (`localStorage`)
-und beim nächsten Öffnen wiederhergestellt.
+Der gewählte Charakter und der Fortschritt im Trainingsplan werden im Browser
+gespeichert (`localStorage`) und beim nächsten Öffnen wiederhergestellt.
 
 ## Notation
 
@@ -73,7 +82,12 @@ die Seite enthält ausschließlich selbst geschriebene Inhalte, Zeichen und Farb
 
 - Eine Datei, kein Build, keine Abhängigkeiten. Die Daten stehen als `ROSTER`-Array im
   `<script>`-Block: pro Charakter `moves` (Eingaben), `strength` (eine Zeile) und
-  `drills` (drei Übungen).
+  `drills` (drei Übungen). Die Grundlagen stehen daneben in `BASICS`.
+- Bereiche werden über `SECTIONS` beschrieben (Name, Untertitel, Symbol, ob
+  charakterbezogen, Renderfunktion). Ein weiterer Punkt im Titelmenü ist ein weiterer
+  Eintrag in dieser Liste.
+- Der Titelbildschirm rechnet bewusst in `vmin` statt durch `fit()` zu laufen: er soll
+  den Screen füllen, nicht auf seinen Inhalt schrumpfen.
 - Eingaben sind Token-Listen: `D` Richtung, `C` Ladebewegung, `M` Bewegung als Text,
   `K` Knöpfe, `T` Zusatz. Eine Karte kann mit `seq2` eine zweite Eingabezeile zeigen
   (z. B. Dhalsims Teleport vor/zurück).
@@ -102,6 +116,16 @@ Skalierung dort doppelt multiplizieren.
 
 Neu getestet wird am einfachsten so: alle 16 Charaktere × 3 Ansichten durchklicken und
 prüfen, dass `stage.scrollHeight <= stage.clientHeight` bleibt.
+
+### Zwei Stolperstellen
+
+Ein `<button>` erbt `color` **nicht** vom `body`, sondern nimmt `buttontext`. Die Karten
+im Trainingsplan sind Buttons – ohne ausdrückliches `color:var(--text)` steht dort
+dunkler Text auf dunklem Grund. Genau das ist beim Bauen einmal passiert.
+
+Der Sparmodus (`.tight`) blendet Fließtext aus, damit die Eingaben groß bleiben. Das
+darf nur in der Specials-Ansicht greifen: bei Training, Trainingsplan und Grundlagen
+*ist* der Text der Inhalt. Der Selektor schließt diese Karten deshalb ausdrücklich aus.
 
 ### Weitere Hinweise
 

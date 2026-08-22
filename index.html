@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0C0A1A">
-<meta name="description" content="Specials und Trainingsplan für alle 16 Charaktere aus Super Street Fighter II (SNES) – passt ohne Scrollen auf den zweiten Screen.">
+<meta name="description" content="Specials, Training und Grundlagen für alle 16 Charaktere aus Super Street Fighter II (SNES) – passt ohne Scrollen auf den zweiten Screen.">
 <meta name="mobile-web-app-capable" content="yes">
 <title>SSF II Specials</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
   --line-soft:#2A2154;
   --gold:#FFB627;
   --gold-deep:#C77E00;
+  --ember:#FF6A2B;
   --text:#EDE9FF;
   --muted:#9C93C7;
 
@@ -54,11 +55,110 @@ body{
   padding-bottom:env(safe-area-inset-bottom);
 }
 
-/* ---------- Kopfzeile ---------- */
+/* =======================================================================
+   Titelbildschirm
+   Eigene Maße in vmin, damit er den Screen immer ausfüllt – er läuft
+   bewusst nicht durch die fit()-Skalierung der Unterseiten.
+   ======================================================================= */
+.title{
+  flex:1 1 auto; min-height:0;
+  display:flex; flex-direction:column;
+  gap:1.6vmin; padding:2vmin 2.4vmin 2.4vmin;
+}
+.hero{
+  position:relative; flex:1 1 auto; min-height:0;
+  display:grid; place-items:center;
+  border-radius:2vmin;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%, #241B4F 0%, #140F30 55%, #0B0819 100%);
+  border:1px solid var(--line);
+}
+.hero canvas{position:absolute; inset:0; width:100%; height:100%}
+.logo{position:relative; text-align:center; padding:0 3vmin}
+.logo .over{
+  display:block;
+  font-size:2.4vmin; font-weight:700; letter-spacing:.42em;
+  text-transform:uppercase; color:var(--muted);
+  margin-bottom:.6vmin; text-indent:.42em;
+}
+.logo .big{
+  display:block;
+  font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:11vmin; line-height:.86; letter-spacing:.005em;
+  text-transform:uppercase;
+  transform:skewX(-9deg);
+  background:linear-gradient(178deg,#FFE9A8 4%,var(--gold) 38%,var(--ember) 92%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  -webkit-text-stroke:.45vmin rgba(12,10,26,.85);
+  paint-order:stroke fill;
+  filter:drop-shadow(.5vmin .5vmin 0 rgba(12,10,26,.8));
+}
+.logo .under{
+  display:block; margin-top:1vmin;
+  font-size:2.6vmin; font-weight:700; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold);
+  text-indent:.2em;
+}
+.logo .sub{
+  display:block; margin-top:.4vmin;
+  font-size:2.1vmin; font-weight:600; letter-spacing:.06em; color:var(--muted);
+}
+
+.menu{
+  flex:none;
+  display:grid; grid-template-columns:1fr;
+  gap:1.2vmin;
+}
+/* Erst ab einem wirklich breiten Screen zwei Spalten – auf dem kleinen
+   zweiten Screen würden die Namen sonst abgeschnitten. */
+@media (min-width:560px){
+  .menu{grid-template-columns:repeat(2,1fr)}
+  .menu button:last-child:nth-child(odd){grid-column:1 / -1}
+}
+.menu button{
+  appearance:none; font:inherit; cursor:pointer; text-align:left;
+  display:flex; align-items:center; gap:1.4vmin;
+  min-width:0; padding:1.5vmin 1.7vmin;
+  background:linear-gradient(100deg,var(--panel-hi),var(--panel) 70%);
+  color:var(--text);
+  border:1px solid var(--line); border-left:.7vmin solid var(--gold);
+  border-radius:1.3vmin;
+}
+.menu button:active{background:var(--panel-hi)}
+.menu button:focus-visible{outline:.4vmin solid var(--gold); outline-offset:.3vmin}
+.menu .glyph{flex:none; width:5.4vmin; height:5.4vmin}
+.menu .glyph svg{width:100%; height:100%; display:block}
+.menu .txt{min-width:0}
+.menu .nm{
+  display:block; font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:3.4vmin; letter-spacing:.03em; text-transform:uppercase;
+  color:var(--gold); transform:skewX(-8deg);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.menu .ds{
+  display:block; font-size:2.3vmin; color:var(--muted);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.title-foot{
+  flex:none; display:flex; align-items:center; gap:1.2vmin;
+  font-size:2.1vmin; color:var(--muted);
+}
+.title-foot b{color:var(--text); font-weight:600}
+.title-foot button{
+  appearance:none; font:inherit; cursor:pointer; margin-left:auto;
+  background:var(--panel); color:var(--muted);
+  border:1px solid var(--line-soft); border-radius:1vmin;
+  padding:.8vmin 1.6vmin; font-size:2.1vmin;
+}
+
+/* =======================================================================
+   Kopfzeile der Unterseiten
+   ======================================================================= */
 .bar{
   flex:none;
   display:flex; align-items:stretch; gap:4px;
-  padding:4px 5px 0;
+  padding:4px 5px;
 }
 .bar button{
   appearance:none; font:inherit; cursor:pointer;
@@ -69,46 +169,40 @@ body{
 }
 .bar button:active{background:var(--panel-hi)}
 .bar button:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
-.step{flex:none; width:34px; font-size:18px; font-weight:700; color:var(--gold)}
-.who{
+.back{flex:none; width:38px; color:var(--gold); display:grid; place-items:center;
+  background:linear-gradient(180deg,var(--panel-hi),var(--panel))}
+.back svg{width:17px; height:17px}
+.step{flex:none; width:30px; font-size:17px; font-weight:700; color:var(--gold)}
+.icon{flex:none; width:32px; font-size:13px; color:var(--muted)}
+.here{
   flex:1 1 auto; min-width:0;
   display:flex; align-items:center; justify-content:center; gap:6px;
   padding:6px 8px;
   border-color:var(--line);
   background:linear-gradient(90deg,var(--panel-hi),var(--panel));
 }
-.who b{
+.here b{
   font-family:Anton,Impact,sans-serif; font-weight:400;
-  font-size:17px; letter-spacing:.02em; text-transform:uppercase;
+  font-size:16px; letter-spacing:.02em; text-transform:uppercase;
   color:var(--gold); text-shadow:1px 1px 0 var(--gold-deep);
   transform:skewX(-8deg);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.who .flag{font-size:14px}
-.who .caret{font-size:9px; color:var(--muted)}
-.icon{flex:none; width:34px; font-size:14px; color:var(--muted)}
+.here .flag{font-size:13px}
+.here .caret{font-size:8px; color:var(--muted)}
+.here[disabled]{opacity:1; cursor:default}
+.section-name{
+  flex:1 1 auto; min-width:0;
+  display:flex; align-items:center; justify-content:center;
+  padding:6px 8px;
+  font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
 
-/* ---------- Reiter ---------- */
-.tabs{
-  flex:none;
-  display:flex; gap:4px;
-  padding:4px 5px;
-}
-.tabs button{
-  appearance:none; font:inherit; cursor:pointer;
-  flex:1 1 0; min-width:0;
-  background:transparent; color:var(--muted);
-  border:1px solid var(--line-soft); border-radius:8px;
-  padding:5px 4px;
-  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-  user-select:none;
-}
-.tabs button[aria-pressed="true"]{
-  background:var(--gold); color:#241700; border-color:var(--gold);
-}
-.tabs button:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
-
-/* ---------- Bühne: skaliert sich selbst, damit nichts scrollt ---------- */
+/* =======================================================================
+   Bühne: skaliert sich selbst, damit nichts scrollt
+   ======================================================================= */
 .stage{
   flex:1 1 auto; min-height:0;
   overflow:hidden;
@@ -118,8 +212,9 @@ body{
 }
 .stage.overflowing{overflow-y:auto}
 /* Sparmodus: Wird der Inhalt sonst unlesbar klein, weicht der Fließtext
-   den Eingaben. Trainingskarten behalten ihn, dort ist er der Inhalt. */
-.stage.tight .card:not(.drill) .card-note{display:none}
+   den Eingaben. Nur in der Specials-Ansicht – bei Training, Trainingsplan und
+   Grundlagen ist der Text der Inhalt und bleibt stehen. */
+.stage.tight .card:not(.drill):not(.basic):not(.step-card) .card-note{display:none}
 .stage.tight .card{padding:.4em .45em; gap:.3em}
 .stage.tight .grid{gap:.3em}
 
@@ -243,10 +338,72 @@ body{
 .drill .charge span{font-size:.58em}
 .drill .motion{font-size:.66em; padding:.24em .36em}
 
+/* ---------- Grundlagen ---------- */
+.basic{border-left:.18em solid var(--line)}
+.basic .card-note{color:var(--text)}
+.basic .card-title{font-size:.95em}
+.basic .tagline{
+  margin:0; font-size:.72em; font-weight:700; color:var(--gold);
+  letter-spacing:.04em;
+}
+
+/* ---------- Trainingsplan ---------- */
+.plan-head{
+  grid-column:1 / -1;
+  display:flex; align-items:center; gap:.5em;
+  padding:.4em .6em;
+  border-radius:.5em;
+  border:1px solid var(--line);
+  border-left:.25em solid var(--gold);
+  background:linear-gradient(90deg,var(--panel-hi),var(--panel) 70%);
+}
+.plan-head .bar-track{
+  flex:1 1 auto; height:.5em; min-width:3em;
+  border-radius:.3em; background:#0E0B22; border:1px solid var(--line-soft);
+  overflow:hidden;
+}
+.plan-head .bar-fill{
+  height:100%; background:linear-gradient(90deg,var(--gold),var(--ember));
+  transition:width .2s ease;
+}
+.plan-head .count{
+  font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:.95em; color:var(--gold); font-variant-numeric:tabular-nums;
+}
+.plan-head button{
+  appearance:none; font:inherit; cursor:pointer;
+  background:var(--panel); color:var(--muted);
+  border:1px solid var(--line-soft); border-radius:.4em;
+  padding:.2em .5em; font-size:.68em;
+}
+.step-card{
+  text-align:left; font:inherit; cursor:pointer;
+  /* Ein <button> erbt color nicht vom body, sondern nimmt buttontext –
+     ohne diese Zeile steht dunkler Text auf dunklem Grund. */
+  color:var(--text);
+  border-left:.18em solid var(--line);
+}
+.step-card .card-head{flex-wrap:nowrap; align-items:flex-start; gap:.4em}
+.tick{
+  flex:none; display:grid; place-items:center;
+  width:calc(var(--u) * 1.35); height:calc(var(--u) * 1.35);
+  border-radius:.3em;
+  border:.12em solid var(--line);
+  background:#0E0B22;
+}
+.tick svg{width:70%; height:70%; fill:none; stroke:#241700; stroke-width:2.6;
+  stroke-linecap:round; stroke-linejoin:round; opacity:0}
+.step-card[aria-pressed="true"]{border-left-color:var(--gold)}
+.step-card[aria-pressed="true"] .tick{background:var(--gold); border-color:var(--gold)}
+.step-card[aria-pressed="true"] .tick svg{opacity:1}
+.step-card[aria-pressed="true"] .card-title{color:var(--muted); text-decoration:line-through}
+.step-card .card-note{color:var(--text)}
+.step-list{margin:0; padding-left:1.1em; font-size:.76em; color:var(--muted)}
+.step-list li{margin:.1em 0}
+
 /* ---------- Tastenbelegung ---------- */
 .keyrow{display:flex; align-items:center; gap:.45em}
 .keyrow span{font-size:.85em}
-.keyrow em{font-style:normal; color:var(--muted); font-size:.75em}
 .legend-card{gap:.5em}
 .legend-card p{margin:0; font-size:.78em; color:var(--muted)}
 .legend-card p b{color:var(--text); font-weight:600}
@@ -289,36 +446,55 @@ body{
 }
 .chip .flag{font-size:15px; line-height:1}
 .chip .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
-.chip[aria-pressed="true"]{
-  background:var(--gold); color:#241700; border-color:var(--gold);
-}
+.chip[aria-pressed="true"]{background:var(--gold); color:#241700; border-color:var(--gold)}
 .chip:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
+
+[hidden]{display:none !important}
 
 @media (prefers-reduced-motion:no-preference){
   .grid>*{animation:rise .2s ease-out both; animation-delay:calc(var(--i,0) * 30ms)}
+  .menu button{animation:rise .26s ease-out both; animation-delay:calc(var(--i,0) * 55ms)}
+  .logo{animation:punch .34s cubic-bezier(.2,1.5,.4,1) both}
 }
 @keyframes rise{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+@keyframes punch{from{opacity:0; transform:scale(1.16)} to{opacity:1; transform:none}}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <div class="bar">
-    <button class="step" id="prev" aria-label="Vorheriger Charakter">‹</button>
-    <button class="who" id="who" aria-label="Charakter wählen">
-      <span class="flag" id="who-flag">🇯🇵</span><b id="who-name">Ryu</b><span class="caret">▼</span>
+
+  <!-- Titelbildschirm -->
+  <div class="title" id="title">
+    <div class="hero">
+      <canvas id="rays" aria-hidden="true"></canvas>
+      <div class="logo">
+        <span class="over">Super</span>
+        <span class="big">Street<br>Fighter II</span>
+        <span class="under">The New Challengers</span>
+        <span class="sub">Specials &middot; Training &middot; Grundlagen &nbsp;|&nbsp; SNES</span>
+      </div>
+    </div>
+    <nav class="menu" id="menu" aria-label="Bereiche"></nav>
+    <div class="title-foot">
+      <span>Zuletzt: <b id="last-fighter">Ryu</b></span>
+      <button id="fs-title" type="button">Vollbild</button>
+    </div>
+  </div>
+
+  <!-- Unterseiten -->
+  <div class="bar" id="bar" hidden>
+    <button class="back" id="back" aria-label="Zurück zum Titelbildschirm"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg></button>
+    <button class="step" id="prev" aria-label="Vorheriger Charakter" hidden>‹</button>
+    <button class="here" id="here" aria-label="Charakter wählen">
+      <span class="flag" id="here-flag">🇯🇵</span><b id="here-name">Ryu</b><span class="caret">▼</span>
     </button>
-    <button class="step" id="next" aria-label="Nächster Charakter">›</button>
+    <div class="section-name" id="section-name" hidden>Grundlagen</div>
+    <button class="step" id="next" aria-label="Nächster Charakter" hidden>›</button>
     <button class="icon" id="fs" aria-label="Vollbild">⛶</button>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button data-tab="specials" aria-pressed="true">Specials</button>
-    <button data-tab="training" aria-pressed="false">Training</button>
-    <button data-tab="keys" aria-pressed="false">Tasten</button>
-  </div>
-
-  <div class="stage" id="stage"><div class="grid" id="view"></div></div>
+  <div class="stage" id="stage" hidden><div class="grid" id="view"></div></div>
 </div>
 
 <div class="sheet" id="sheet" hidden>
@@ -633,6 +809,26 @@ const ROSTER = [
 
 const ALL = ROSTER.flatMap(g => g.chars);
 
+/* Grundlagen: gilt für alle Charaktere, unabhängig vom Moveset. */
+const BASICS = [
+  {n:"Anti-Air", tag:"Sprünge kosten den Gegner Leben",
+   t:"Wer springt, kann seine Richtung nicht mehr ändern. Genau dafür gibt es die aufsteigenden Specials – Drachenfaust, Flash Kick, Cannon Spike. Nicht zu früh drücken: erst wenn der Gegner schon in der Luft ist und näher kommt. Wer keinen solchen Special hat, nimmt einen geduckten starken Punch."},
+  {n:"Abstand", tag:"Der halbe Kampf",
+   t:"Steh so, dass die eigene längste Attacke gerade eben trifft, der Gegner aber nicht herankommt. Vor- und Zurückgehen ist kein Zögern, sondern die eigentliche Arbeit: Du zwingst den Gegner, zuerst etwas zu versuchen."},
+  {n:"Blocken", tag:"Zurück halten reicht nicht",
+   t:"Tiefe Angriffe musst du geduckt blocken, Sprungangriffe stehend. Wer immer nur duckt, fängt sich den Sprungkick; wer immer steht, den Fußfeger. Blocken kostet nichts – im Gegenteil, bei Ladungscharakteren lädt es mit."},
+  {n:"Werfen", tag:"Die Antwort auf Dauerblocken",
+   t:"Direkt am Gegner Richtung plus starken Punch oder Kick. Ein Wurf geht durch jede Deckung. Wer merkt, dass der Gegner nur noch blockt, wirft ihn – wer merkt, dass geworfen wird, springt weg oder schlägt zuerst."},
+  {n:"Ladung halten", tag:"Zwei Ladungen auf einmal",
+   t:"Ladebewegungen laufen mit, während du blockst oder duckst. Schräg zurück-unten gedrückt halten lädt beides gleichzeitig auf – vorwärts und aufwärts. Genau davon leben Guile, Chun-Li, Dee Jay und Bison."},
+  {n:"Aufstehen", tag:"Der gefährlichste Moment",
+   t:"Nach einem Niederschlag steht der Gegner mit einer festen Geschwindigkeit auf – und weiß genau, wann. Renne ihm nicht blind hinterher. Stell dich knapp außer Reichweite, blocke zuerst und schlag erst zu, wenn er etwas versucht hat."},
+  {n:"Feuerball-Krieg", tag:"Wer zuerst wirft, hat verloren",
+   t:"Zwei Feuerball-Charaktere auf Distanz: Wer blind wirft, wird beim Werfen übersprungen. Warte auf den Wurf des Gegners, spring darüber und lande mit einem Angriff. Feuerbälle sind eine Falle, kein Selbstläufer."},
+  {n:"Bestrafen", tag:"Geblockt heißt am Zug",
+   t:"Viele Specials lassen den Angreifer nach einem geblockten Treffer ungeschützt stehen – Rolling Attack, Psycho Crusher, Spiral Arrow. Blocke sie ruhig und schlag danach sofort zurück, statt selbst etwas zu riskieren."}
+];
+
 /* =========================================================================
    Bausteine
    ========================================================================= */
@@ -696,6 +892,20 @@ function renderSeq(seq){
   return box;
 }
 
+function moveSeqs(f, refs){
+  /* "Name" oder "Name#2" auf die passende Eingabezeile abbilden. */
+  const out = [];
+  (refs || []).forEach(ref => {
+    const [name, which] = ref.split("#");
+    const mv = f.moves.find(m => m.n === name);
+    if(!mv) return;
+    const seq = which === "2" ? mv.seq2 : mv.seq;
+    if(!seq) return;
+    out.push([mv.n, seq]);
+  });
+  return out;
+}
+
 /* =========================================================================
    Ansichten
    ========================================================================= */
@@ -727,14 +937,9 @@ function viewTraining(f){
     head.appendChild(el("h2","card-title", d.n));
     card.appendChild(head);
     card.appendChild(el("p","card-note", d.t));
-    (d.use || []).forEach(ref => {
-      const [name, which] = ref.split("#");
-      const mv = f.moves.find(m => m.n === name);
-      if(!mv) return;
-      const seq = which === "2" ? mv.seq2 : mv.seq;
-      if(!seq) return;
+    moveSeqs(f, d.use).forEach(([name, seq]) => {
       const wrap = el("div","use");
-      wrap.appendChild(el("span","use-label", mv.n));
+      wrap.appendChild(el("span","use-label", name));
       wrap.appendChild(renderSeq(seq));
       card.appendChild(wrap);
     });
@@ -743,36 +948,121 @@ function viewTraining(f){
   return out;
 }
 
+function viewBasics(){
+  return BASICS.map(b => {
+    const card = el("article","card basic");
+    card.appendChild(el("h2","card-title", b.n));
+    card.appendChild(el("p","tagline", b.tag));
+    card.appendChild(el("p","card-note", b.t));
+    return card;
+  });
+}
+
+/* Der Plan entsteht aus den Daten des Charakters – kein doppelt gepflegter Text. */
+function planSteps(f){
+  const steps = [
+    {n:"Eingaben sitzen",
+     t:"Jeden Special zehnmal hintereinander ohne Fehleingabe. Erst wenn die Bewegung von allein kommt, taugt sie im Kampf.",
+     list:f.moves.map(m => m.n)}
+  ];
+  f.drills.forEach(d => steps.push({n:d.n, t:d.t, use:d.use}));
+  steps.push({
+    n:"Ernstfall",
+    t:"Ein Match gegen den Computer, in dem du die letzte Übung bewusst einsetzt – auch wenn du dabei eine Runde verlierst. Gelernt wird im Kampf, nicht im Menü."
+  });
+  return steps;
+}
+
+function viewPlan(f){
+  const steps = planSteps(f);
+  const done = loadPlan(f.id);
+  const out = [];
+
+  const head = el("div","plan-head");
+  const count = el("b","count");
+  const track = el("div","bar-track");
+  const fill = el("div","bar-fill");
+  track.appendChild(fill);
+  const reset = el("button",null,"Zurücksetzen");
+  reset.type = "button";
+  head.appendChild(count);
+  head.appendChild(track);
+  head.appendChild(reset);
+  out.push(head);
+
+  function refresh(){
+    const n = done.filter(Boolean).length;
+    count.textContent = n + "/" + steps.length;
+    fill.style.width = Math.round(n / steps.length * 100) + "%";
+  }
+
+  reset.addEventListener("click", () => {
+    done.fill(false);
+    savePlan(f.id, done);
+    out.forEach(node => {
+      if(node.classList.contains("step-card")) node.setAttribute("aria-pressed","false");
+    });
+    refresh();
+  });
+
+  steps.forEach((s, i) => {
+    const card = el("button","card step-card");
+    card.type = "button";
+    card.setAttribute("aria-pressed", String(!!done[i]));
+
+    const head2 = el("div","card-head");
+    const tick = el("span","tick");
+    tick.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 6.4 4.9 9 9.6 3.4"/></svg>';
+    head2.appendChild(tick);
+    head2.appendChild(el("h2","card-title", s.n));
+    card.appendChild(head2);
+    card.appendChild(el("p","card-note", s.t));
+
+    if(s.list){
+      const ul = el("ul","step-list");
+      s.list.forEach(item => ul.appendChild(el("li", null, item)));
+      card.appendChild(ul);
+    }
+    moveSeqs(f, s.use).forEach(([name, seq]) => {
+      const wrap = el("div","use");
+      wrap.appendChild(el("span","use-label", name));
+      wrap.appendChild(renderSeq(seq));
+      card.appendChild(wrap);
+    });
+
+    card.addEventListener("click", () => {
+      done[i] = !done[i];
+      card.setAttribute("aria-pressed", String(done[i]));
+      savePlan(f.id, done);
+      refresh();
+    });
+    out.push(card);
+  });
+
+  refresh();
+  return out;
+}
+
 function viewKeys(){
   const out = [];
 
-  const punch = el("article","card legend-card");
-  punch.appendChild(el("h2","card-title","Punch"));
-  [["Y","y","schwach – schnell, wenig Schaden"],
-   ["X","x","mittel"],
-   ["L","l","stark – langsam, viel Schaden"]].forEach(([le,cl,txt]) => {
-    const row = el("div","keyrow");
-    row.appendChild(keyChip(le, cl));
-    row.appendChild(el("span",null,txt));
-    punch.appendChild(row);
+  [["Punch", [["Y","y","schwach – schnell, wenig Schaden"],["X","x","mittel"],["L","l","stark – langsam, viel Schaden"]]],
+   ["Kick",  [["B","b","schwach – schnell, wenig Schaden"],["A","a","mittel"],["R","r","stark – langsam, viel Schaden"]]]
+  ].forEach(([title, rows]) => {
+    const card = el("article","card legend-card");
+    card.appendChild(el("h2","card-title", title));
+    rows.forEach(([le, cl, txt]) => {
+      const row = el("div","keyrow");
+      row.appendChild(keyChip(le, cl));
+      row.appendChild(el("span",null,txt));
+      card.appendChild(row);
+    });
+    out.push(card);
   });
-  out.push(punch);
-
-  const kick = el("article","card legend-card");
-  kick.appendChild(el("h2","card-title","Kick"));
-  [["B","b","schwach – schnell, wenig Schaden"],
-   ["A","a","mittel"],
-   ["R","r","stark – langsam, viel Schaden"]].forEach(([le,cl,txt]) => {
-    const row = el("div","keyrow");
-    row.appendChild(keyChip(le, cl));
-    row.appendChild(el("span",null,txt));
-    kick.appendChild(row);
-  });
-  out.push(kick);
 
   const rules = el("article","card legend-card");
   rules.appendChild(el("h2","card-title","Richtungen"));
-  rules.appendChild(el("p",null,'Alle Pfeile gelten für <b>Blick nach rechts</b>. Vorwärts heißt immer „zum Gegner hin\", zurück „von ihm weg\".'));
+  rules.appendChild(el("p",null,'Alle Pfeile gelten für <b>Blick nach rechts</b>. Vorwärts heißt immer „zum Gegner hin", zurück „von ihm weg".'));
   const ex = el("div","seq");
   ex.appendChild(arrow("d")); ex.appendChild(arrow("df")); ex.appendChild(arrow("f"));
   rules.appendChild(ex);
@@ -789,7 +1079,7 @@ function viewKeys(){
   cbox.appendChild(el("span","op","+"));
   cbox.appendChild(arrow("f"));
   charge.appendChild(cbox);
-  charge.appendChild(el("p",null,'Rot heißt <b>halten</b>: Richtung ca. zwei Sekunden gedrückt lassen, dann die Folgeeingabe. Blocken und Ducken laden mit – die Ladung geht dabei nicht verloren.'));
+  charge.appendChild(el("p",null,'Rot heißt <b>halten</b>: Richtung ca. zwei Sekunden gedrückt lassen, dann die Folgeeingabe. Blocken und Ducken laden mit.'));
   out.push(charge);
 
   const version = el("article","card legend-card");
@@ -801,43 +1091,89 @@ function viewKeys(){
 }
 
 /* =========================================================================
-   Zustand & Anzeige
+   Bereiche
    ========================================================================= */
 
-const stage = document.getElementById("stage");
-const view  = document.getElementById("view");
-let currentId = "ryu";
-let currentTab = "specials";
+const GLYPHS = {
+  specials:'<svg viewBox="0 0 24 24" fill="none" stroke="#FFB627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h5"/><path d="M6 20l3-3-3-3"/><circle cx="17" cy="8" r="4"/><path d="M17 2v2M17 12v2M23 8h-2M13 8h-2"/></svg>',
+  training:'<svg viewBox="0 0 24 24" fill="none" stroke="#FFB627" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="#FFB627"/></svg>',
+  plan:'<svg viewBox="0 0 24 24" fill="none" stroke="#FFB627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h4M4 12h4M4 18h4"/><path d="M12 5.5l2 2 4-4"/><path d="M12 12h8M12 18h8"/></svg>',
+  basics:'<svg viewBox="0 0 24 24" fill="none" stroke="#FFB627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8.3-8 9.5C7.2 20.3 4 16.5 4 12V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+  keys:'<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.8" fill="#FF4D5E"/><circle cx="19" cy="12" r="2.8" fill="#FFC93C"/><circle cx="12" cy="19" r="2.8" fill="#3FBF6A"/><circle cx="5" cy="12" r="2.8" fill="#4A8CFF"/></svg>'
+};
+
+const SECTIONS = [
+  {id:"specials", nm:"Specials",      ds:"Alle Spezialangriffe",       fighter:true,  view:viewSpecials},
+  {id:"training", nm:"Training",      ds:"Stärken gezielt üben",       fighter:true,  view:viewTraining},
+  {id:"plan",     nm:"Trainingsplan", ds:"Abhaken, was sitzt",         fighter:true,  view:viewPlan},
+  {id:"basics",   nm:"Grundlagen",    ds:"Anti-Air, Abstand, Blocken", fighter:false, view:viewBasics},
+  {id:"keys",     nm:"Tasten",        ds:"Belegung und Notation",      fighter:false, view:viewKeys}
+];
+
+/* =========================================================================
+   Zustand
+   ========================================================================= */
+
+const titleEl = document.getElementById("title");
+const bar     = document.getElementById("bar");
+const stage   = document.getElementById("stage");
+const view    = document.getElementById("view");
+const sheet   = document.getElementById("sheet");
+
+let currentId  = "ryu";
+let currentSec = null;   /* null = Titelbildschirm */
 
 function store(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
 function recall(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 
+function loadPlan(id){
+  const steps = planSteps(ALL.find(c => c.id === id)).length;
+  let saved = [];
+  try{ saved = JSON.parse(recall("ssf2-plan-" + id) || "[]"); }catch(e){ saved = []; }
+  return Array.from({length: steps}, (_, i) => !!saved[i]);
+}
+function savePlan(id, done){ store("ssf2-plan-" + id, JSON.stringify(done)); }
+
+function fighter(){ return ALL.find(c => c.id === currentId) || ALL[0]; }
+
 function render(){
-  const f = ALL.find(c => c.id === currentId) || ALL[0];
+  const onTitle = currentSec === null;
+  titleEl.hidden = !onTitle;
+  bar.hidden = onTitle;
+  stage.hidden = onTitle;
 
-  document.getElementById("who-name").textContent = f.name;
-  document.getElementById("who-flag").textContent = f.flag;
+  if(onTitle){
+    document.getElementById("last-fighter").textContent = fighter().name;
+    drawRays();
+    return;
+  }
 
-  const nodes = currentTab === "specials" ? viewSpecials(f)
-              : currentTab === "training" ? viewTraining(f)
-              : viewKeys();
+  const sec = SECTIONS.find(s => s.id === currentSec);
+  const f = fighter();
+
+  document.getElementById("here").hidden = !sec.fighter;
+  document.getElementById("prev").hidden = !sec.fighter;
+  document.getElementById("next").hidden = !sec.fighter;
+  const nameBox = document.getElementById("section-name");
+  nameBox.hidden = sec.fighter;
+  nameBox.textContent = sec.nm;
+
+  if(sec.fighter){
+    document.getElementById("here-name").textContent = f.name;
+    document.getElementById("here-flag").textContent = f.flag;
+  }
 
   view.textContent = "";
-  nodes.forEach((n, i) => { n.style.setProperty("--i", i); view.appendChild(n); });
+  sec.view(f).forEach((n, i) => { n.style.setProperty("--i", i); view.appendChild(n); });
 
   document.querySelectorAll(".chip").forEach(c =>
     c.setAttribute("aria-pressed", String(c.dataset.id === f.id)));
-  document.querySelectorAll(".tabs button").forEach(b =>
-    b.setAttribute("aria-pressed", String(b.dataset.tab === currentTab)));
 
   store("ssf2-fighter", f.id);
-  store("ssf2-tab", currentTab);
   fit();
 }
 
-/* Skaliert den Inhalt so lange herunter, bis er ohne Scrollen auf den
-   Screen passt. Von groß nach klein, damit die erste passende Stufe
-   auch die größtmögliche ist. */
+/* Skaliert den Inhalt so lange herunter, bis er ohne Scrollen passt. */
 const MIN_READABLE = 0.82;
 
 function fit(){
@@ -876,18 +1212,76 @@ function apply(scale){
   }
 }
 
-function setFighter(id){ currentId = id; render(); }
-function stepFighter(delta){
-  const i = ALL.findIndex(c => c.id === currentId);
-  setFighter(ALL[(i + delta + ALL.length) % ALL.length].id);
+/* =========================================================================
+   Titelgrafik: Strahlenkranz auf Canvas, selbst gezeichnet
+   ========================================================================= */
+
+function drawRays(){
+  const cv = document.getElementById("rays");
+  const box = cv.parentElement.getBoundingClientRect();
+  if(!box.width || !box.height) return;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width  = Math.round(box.width  * dpr);
+  cv.height = Math.round(box.height * dpr);
+
+  const g = cv.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, box.width, box.height);
+
+  const cx = box.width / 2, cy = box.height * 0.44;
+  const r  = Math.hypot(box.width, box.height);
+
+  /* Strahlen */
+  const rays = 24;
+  for(let i = 0; i < rays; i++){
+    const a0 = (i / rays) * Math.PI * 2;
+    const a1 = a0 + (Math.PI * 2 / rays) * 0.5;
+    g.beginPath();
+    g.moveTo(cx, cy);
+    g.arc(cx, cy, r, a0, a1);
+    g.closePath();
+    g.fillStyle = i % 2 ? "rgba(255,182,39,.055)" : "rgba(255,106,43,.03)";
+    g.fill();
+  }
+
+  /* Rasterpunkte, wie bei alten Druckvorlagen */
+  const stepPx = 7;
+  g.fillStyle = "rgba(255,182,39,.05)";
+  for(let y = 0; y < box.height; y += stepPx){
+    for(let x = (Math.floor(y / stepPx) % 2) * (stepPx / 2); x < box.width; x += stepPx){
+      const d = Math.hypot(x - cx, y - cy) / (r * 0.5);
+      const s = Math.max(0, 1.15 - d) * 1.5;
+      if(s > 0.15){ g.beginPath(); g.arc(x, y, s, 0, Math.PI * 2); g.fill(); }
+    }
+  }
+
+  /* Rand abdunkeln, damit das Logo trägt */
+  const vign = g.createRadialGradient(cx, cy, Math.min(box.width, box.height) * 0.15,
+                                      cx, cy, r * 0.62);
+  vign.addColorStop(0, "rgba(11,8,25,0)");
+  vign.addColorStop(1, "rgba(11,8,25,.85)");
+  g.fillStyle = vign;
+  g.fillRect(0, 0, box.width, box.height);
 }
-function setTab(tab){ currentTab = tab; render(); }
 
 /* =========================================================================
    Bedienung
    ========================================================================= */
 
-const sheet = document.getElementById("sheet");
+function buildMenu(){
+  const host = document.getElementById("menu");
+  SECTIONS.forEach((s, i) => {
+    const b = el("button");
+    b.type = "button";
+    b.style.setProperty("--i", i);
+    b.innerHTML = '<span class="glyph">' + GLYPHS[s.id] + '</span>' +
+                  '<span class="txt"><span class="nm">' + s.nm + '</span>' +
+                  '<span class="ds">' + s.ds + '</span></span>';
+    b.addEventListener("click", () => openSection(s.id));
+    host.appendChild(b);
+  });
+}
 
 function buildSheet(){
   const host = document.getElementById("sheet-grid");
@@ -897,53 +1291,79 @@ function buildSheet(){
     b.dataset.id = c.id;
     b.setAttribute("aria-pressed","false");
     b.innerHTML = '<span class="flag">' + c.flag + '</span><span class="nm">' + c.name + '</span>';
-    b.addEventListener("click", () => { setFighter(c.id); closeSheet(); });
+    b.addEventListener("click", () => { currentId = c.id; closeSheet(); render(); });
     host.appendChild(b);
   });
 }
+
+function openSection(id){ currentSec = id; render(); }
+function goTitle(){ currentSec = null; render(); }
 function openSheet(){ sheet.hidden = false; }
 function closeSheet(){ sheet.hidden = true; }
 
-document.getElementById("who").addEventListener("click", openSheet);
+function stepFighter(delta){
+  const i = ALL.findIndex(c => c.id === currentId);
+  currentId = ALL[(i + delta + ALL.length) % ALL.length].id;
+  render();
+}
+
+document.getElementById("back").addEventListener("click", goTitle);
+document.getElementById("here").addEventListener("click", openSheet);
 document.getElementById("sheet-close").addEventListener("click", closeSheet);
 document.getElementById("prev").addEventListener("click", () => stepFighter(-1));
 document.getElementById("next").addEventListener("click", () => stepFighter(1));
-document.querySelectorAll(".tabs button").forEach(b =>
-  b.addEventListener("click", () => setTab(b.dataset.tab)));
 
-document.getElementById("fs").addEventListener("click", () => {
+function toggleFullscreen(){
   if(document.fullscreenElement) document.exitFullscreen();
   else if(document.documentElement.requestFullscreen)
     document.documentElement.requestFullscreen().catch(() => {});
-});
+}
+document.getElementById("fs").addEventListener("click", toggleFullscreen);
+document.getElementById("fs-title").addEventListener("click", toggleFullscreen);
+
+/* Zurück-Taste des Geräts: erst die Auswahl schließen, dann zum Titel.
+   Gibt false zurück, wenn nichts mehr zurückzugehen ist – dann beendet
+   die App sich selbst (siehe MainActivity). */
+window.__back = function(){
+  if(!sheet.hidden){ closeSheet(); return true; }
+  if(currentSec !== null){ goTitle(); return true; }
+  return false;
+};
 
 document.addEventListener("keydown", e => {
-  if(e.key === "Escape" && !sheet.hidden){ closeSheet(); return; }
-  if(e.key === "ArrowLeft")  stepFighter(-1);
-  if(e.key === "ArrowRight") stepFighter(1);
-  if(e.key === "1") setTab("specials");
-  if(e.key === "2") setTab("training");
-  if(e.key === "3") setTab("keys");
+  if(e.key === "Escape"){ window.__back(); return; }
+  if(currentSec === null){
+    const i = "12345".indexOf(e.key);
+    if(i >= 0 && SECTIONS[i]) openSection(SECTIONS[i].id);
+    return;
+  }
+  const sec = SECTIONS.find(s => s.id === currentSec);
+  if(sec && sec.fighter){
+    if(e.key === "ArrowLeft")  stepFighter(-1);
+    if(e.key === "ArrowRight") stepFighter(1);
+  }
 });
 
 let resizeTimer;
 addEventListener("resize", () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(fit, 120);
+  resizeTimer = setTimeout(() => { if(currentSec === null) drawRays(); else fit(); }, 120);
 });
-addEventListener("orientationchange", () => setTimeout(fit, 250));
+addEventListener("orientationchange", () =>
+  setTimeout(() => { if(currentSec === null) drawRays(); else fit(); }, 250));
 
 /* =========================================================================
    Start
    ========================================================================= */
 
+buildMenu();
 buildSheet();
-currentId  = recall("ssf2-fighter") || "ryu";
-currentTab = recall("ssf2-tab") || "specials";
+currentId = recall("ssf2-fighter") || "ryu";
 if(!ALL.some(c => c.id === currentId)) currentId = "ryu";
-if(!["specials","training","keys"].includes(currentTab)) currentTab = "specials";
 render();
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => { if(currentSec === null) drawRays(); else fit(); });
+}
 </script>
 </body>
 </html>
