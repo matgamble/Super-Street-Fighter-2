@@ -20,6 +20,10 @@ Die Trainingsübungen sind bewusst als Reihenfolge nummeriert: Übung 1 legt die
 
 ## Benutzen
 
+- **Als Android-App:** `android/ssf2-specials.apk` aufs Gerät kopieren und
+  antippen. Läuft komplett offline, fordert keine Berechtigungen und liegt
+  danach als „SSF II Specials" im Launcher. Bauen und Hintergründe:
+  [`android/README.md`](android/README.md).
 - **Lokal:** `index.html` auf dem Gerät speichern und im Browser öffnen. Funktioniert
   ohne Internet; nur die beiden Schriften (Anton, Barlow Semi Condensed) kommen dann
   aus dem System statt von Google Fonts.
