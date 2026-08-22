@@ -1,11 +1,22 @@
-# Super Street Fighter II – Specials für den zweiten Screen
+# Super Street Fighter II – Specials & Training für den zweiten Screen
 
-Eine einzelne, in sich geschlossene HTML-Seite (`index.html`), die alle Spezialangriffe
-aller 16 Charaktere aus **Super Street Fighter II – The New Challengers (SNES)** zeigt.
+Eine einzelne, in sich geschlossene HTML-Seite (`index.html`) für alle 16 Charaktere aus
+**Super Street Fighter II – The New Challengers (SNES)**.
 
-Gedacht für den unteren Bildschirm des **AYN Thor**: oben läuft das Spiel, unten liegt
-die Seite im Browser. Charakter antippen → alle Specials mit Richtungspfeilen und den
-SNES-Knöpfen.
+Gebaut für den unteren Bildschirm des **AYN Thor** (3,92", 1080 × 1240): oben läuft das
+Spiel, unten liegt die Seite. Sie **scrollt nicht** – der Inhalt skaliert sich so, dass
+er auf einen Blick auf den Screen passt.
+
+## Drei Ansichten
+
+| Reiter | Inhalt |
+|---|---|
+| **Specials** | Alle Spezialangriffe mit Richtungspfeilen und den SNES-Knöpfen |
+| **Training** | Die Stärke des Charakters plus drei aufeinander aufbauende Übungen |
+| **Tasten** | Knopfbelegung, Richtungs- und Ladebewegungs-Notation |
+
+Die Trainingsübungen sind bewusst als Reihenfolge nummeriert: Übung 1 legt die Grundlage,
+Übung 3 setzt sie im Kampf ein.
 
 ## Benutzen
 
@@ -20,14 +31,13 @@ SNES-Knöpfen.
 
 | | |
 |---|---|
-| Charakter wählen | Leiste „Charakter wechseln" antippen |
-| Blättern | Pfeiltasten ← / → |
-| Schriftgröße | die drei **A**-Knöpfe oben rechts |
-| Vollbild | Knopf „Vollbild" |
-| Tastenbelegung | Leiste am unteren Rand aufklappen |
+| Charakter wechseln | `‹` / `›` oder auf den Namen tippen (Vollbild-Auswahl) |
+| Ansicht wechseln | die drei Reiter |
+| Vollbild | `⛶` oben rechts |
+| Tastatur | `←` `→` Charakter, `1` `2` `3` Ansicht, `Esc` Auswahl schließen |
 
-Die zuletzt gewählte Figur, die Schriftgröße und der Zustand der Legende werden im
-Browser gespeichert (`localStorage`) und beim nächsten Öffnen wiederhergestellt.
+Charakter und zuletzt gewählte Ansicht werden im Browser gespeichert (`localStorage`)
+und beim nächsten Öffnen wiederhergestellt.
 
 ## Notation
 
@@ -57,14 +67,42 @@ die Seite enthält ausschließlich selbst geschriebene Inhalte, Zeichen und Farb
 
 ## Technisch
 
-- Eine Datei, kein Build, keine Abhängigkeiten. Die Movelist steht als `ROSTER`-Array
-  im `<script>`-Block, die Eingaben als Token-Liste (`D` Richtung, `C` Ladebewegung,
-  `M` Bewegung als Text, `K` Knöpfe, `T` Zusatz).
+- Eine Datei, kein Build, keine Abhängigkeiten. Die Daten stehen als `ROSTER`-Array im
+  `<script>`-Block: pro Charakter `moves` (Eingaben), `strength` (eine Zeile) und
+  `drills` (drei Übungen).
+- Eingaben sind Token-Listen: `D` Richtung, `C` Ladebewegung, `M` Bewegung als Text,
+  `K` Knöpfe, `T` Zusatz. Eine Karte kann mit `seq2` eine zweite Eingabezeile zeigen
+  (z. B. Dhalsims Teleport vor/zurück).
+
+### Wie „kein Scrollen" funktioniert
+
+`fit()` sucht die größte Schriftgröße, bei der der Inhalt noch in die Bühne passt: Es
+läuft von `--fs = 1.40` in Schritten abwärts und nimmt die erste Stufe ohne Überlauf
+(von groß nach klein, damit die erste passende auch die größtmögliche ist).
+
+Bleibt die Schrift dabei unter `MIN_READABLE`, schaltet die Bühne in den **Sparmodus**
+(`.tight`): Auf der Specials-Ansicht verschwindet der erklärende Fließtext, damit die
+Eingaben groß bleiben. Trainingskarten behalten ihn – dort *ist* der Text der Inhalt.
+Passt selbst das nicht (sehr kleiner oder sehr kurzer Screen), wird Scrollen als
+Rückfallebene erlaubt, statt unlesbar klein zu werden.
+
+Alle Maße innerhalb der Bühne hängen deshalb an `--u` (`calc(var(--fs) * 16px)`) bzw.
+an `em`. Elemente, die **selbst** eine `font-size` setzen (`.key`, `.dir`, `.num`),
+müssen ihre Breite/Höhe über `calc(var(--u) * n)` angeben – mit `em` würde sich die
+Skalierung dort doppelt multiplizieren.
+
+Neu getestet wird am einfachsten so: alle 16 Charaktere × 3 Ansichten durchklicken und
+prüfen, dass `stage.scrollHeight <= stage.clientHeight` bleibt.
+
+### Weitere Hinweise
+
 - Richtungspfeile sind Inline-SVG und werden über das SVG-Attribut
   `transform="rotate(winkel 6 6)"` gedreht – **nicht** per CSS-`transform`: bei einem
   `<svg>`-Element liegt der Drehpunkt sonst nicht zuverlässig in der Mitte.
 - Die Seite ist bewusst einfarbig dunkel gehalten (Spielbegleiter im Dunkeln), es gibt
   also absichtlich kein helles Farbschema.
+- Die Knopffarben entsprechen der Super-Famicom-Belegung und damit den Tasten des
+  AYN Thor: A rot, B gelb, X blau, Y grün.
 
 ### Als Claude-Artifact veröffentlichen
 

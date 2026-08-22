@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0C0A1A">
-<meta name="description" content="Alle Spezialangriffe aller 16 Charaktere aus Super Street Fighter II (SNES) – zum Antippen auf dem zweiten Screen.">
+<meta name="description" content="Specials und Trainingsplan für alle 16 Charaktere aus Super Street Fighter II (SNES) – passt ohne Scrollen auf den zweiten Screen.">
 <meta name="mobile-web-app-capable" content="yes">
 <title>SSF II Specials</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,6 @@
   --line-soft:#2A2154;
   --gold:#FFB627;
   --gold-deep:#C77E00;
-  --hot:#FF4D3D;
   --text:#EDE9FF;
   --muted:#9C93C7;
 
@@ -30,285 +29,303 @@
   --btn-b:#FFC93C;
   --btn-a:#FF4D5E;
   --btn-r:#B7B0D6;
-
-  --ui:1rem;
-  --radius:10px;
-  font-size:16px;
 }
-:root[data-size="s"]{ font-size:14px }
-:root[data-size="l"]{ font-size:19px }
 
 *{box-sizing:border-box}
 
+html,body{height:100%}
 body{
   margin:0;
   background:var(--ground);
   color:var(--text);
   font-family:"Barlow Semi Condensed","Roboto Condensed",system-ui,sans-serif;
-  font-size:var(--ui);
-  line-height:1.35;
+  line-height:1.3;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:manipulation;
   -webkit-text-size-adjust:100%;
-  padding-bottom:5.5rem;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.app{
+  height:100vh; height:100dvh;
+  display:flex; flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
 }
 
 /* ---------- Kopfzeile ---------- */
-.topbar{
-  position:sticky; top:0; z-index:30;
-  display:flex; align-items:center; gap:.75rem;
-  padding:.5rem .75rem;
-  background:linear-gradient(180deg,#12102A 0%,#0F0C22 100%);
-  border-bottom:1px solid var(--line);
+.bar{
+  flex:none;
+  display:flex; align-items:stretch; gap:4px;
+  padding:4px 5px 0;
 }
-.wordmark{
-  font-family:Anton,Impact,sans-serif;
-  font-size:1.05rem; letter-spacing:.03em;
-  text-transform:uppercase;
+.bar button{
+  appearance:none; font:inherit; cursor:pointer;
+  background:var(--panel); color:var(--text);
+  border:1px solid var(--line-soft); border-radius:8px;
+  padding:0 8px; line-height:1;
+  user-select:none;
+}
+.bar button:active{background:var(--panel-hi)}
+.bar button:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
+.step{flex:none; width:34px; font-size:18px; font-weight:700; color:var(--gold)}
+.who{
+  flex:1 1 auto; min-width:0;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:6px 8px;
+  border-color:var(--line);
+  background:linear-gradient(90deg,var(--panel-hi),var(--panel));
+}
+.who b{
+  font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:17px; letter-spacing:.02em; text-transform:uppercase;
+  color:var(--gold); text-shadow:1px 1px 0 var(--gold-deep);
   transform:skewX(-8deg);
-  color:var(--gold);
-  text-shadow:2px 2px 0 var(--gold-deep);
-  white-space:nowrap;
-}
-.wordmark small{
-  display:block; font-family:"Barlow Semi Condensed",sans-serif;
-  font-weight:600; font-size:.52rem;
-  color:var(--muted); text-shadow:none; letter-spacing:.18em;
-}
-.tools{display:flex; gap:.35rem; margin-left:auto}
-.tool{
-  appearance:none; border:1px solid var(--line);
-  background:var(--panel); color:var(--text);
-  font:inherit; font-weight:600; font-size:.78rem;
-  padding:.35rem .6rem; border-radius:var(--radius);
-  cursor:pointer; line-height:1;
-}
-.tool[aria-pressed="true"]{background:var(--gold); color:#241700; border-color:var(--gold)}
-.tool:focus-visible,.chip:focus-visible,.legend-toggle:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
-
-/* ---------- Charakter-Auswahl ---------- */
-.picker{border-bottom:1px solid var(--line-soft); background:#100D26}
-.picker>summary{
-  list-style:none; cursor:pointer;
-  display:flex; align-items:center; gap:.5rem;
-  padding:.5rem .75rem;
-  font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--muted);
-}
-.picker>summary::-webkit-details-marker{display:none}
-.picker>summary:focus-visible{outline:2px solid var(--gold); outline-offset:-2px}
-.picker-caret{color:var(--gold); transition:transform .15s ease}
-.picker[open] .picker-caret{transform:rotate(180deg)}
-.picker-current{margin-left:auto; color:var(--gold); letter-spacing:.06em}
-
-.roster{padding:.6rem .75rem .2rem}
-.roster h2{
-  margin:.55rem 0 .35rem;
-  font-size:.62rem; font-weight:700; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--muted);
-}
-.roster h2:first-child{margin-top:0}
-.chips{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(6.4rem,1fr));
-  gap:.35rem;
-}
-.chip{
-  appearance:none; font:inherit; cursor:pointer; text-align:left;
-  display:flex; align-items:center; gap:.35rem;
-  padding:.4rem .45rem;
-  background:var(--panel); color:var(--text);
-  border:1px solid var(--line-soft); border-radius:var(--radius);
-  font-weight:600; font-size:.85rem; line-height:1.1;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.chip .flag{font-size:.95rem; line-height:1}
-.chip[aria-pressed="true"]{
-  background:var(--gold); color:#241700;
-  border-color:var(--gold);
-  box-shadow:0 0 0 1px var(--gold-deep) inset;
-}
+.who .flag{font-size:14px}
+.who .caret{font-size:9px; color:var(--muted)}
+.icon{flex:none; width:34px; font-size:14px; color:var(--muted)}
 
-/* ---------- Namensbanner ---------- */
-.banner{
-  margin:.8rem .75rem .55rem;
-  padding:.6rem .8rem;
-  border:1px solid var(--line);
-  border-left:4px solid var(--gold);
-  border-radius:var(--radius);
-  background:linear-gradient(90deg,var(--panel-hi) 0%,var(--panel) 60%);
-  display:flex; align-items:baseline; gap:.6rem; flex-wrap:wrap;
+/* ---------- Reiter ---------- */
+.tabs{
+  flex:none;
+  display:flex; gap:4px;
+  padding:4px 5px;
 }
-.banner h1{
-  margin:0;
-  font-family:Anton,Impact,sans-serif;
-  font-size:1.9rem; line-height:1;
-  letter-spacing:.01em; text-transform:uppercase;
-  transform:skewX(-8deg);
-  color:var(--gold);
-  text-shadow:2px 2px 0 var(--gold-deep);
+.tabs button{
+  appearance:none; font:inherit; cursor:pointer;
+  flex:1 1 0; min-width:0;
+  background:transparent; color:var(--muted);
+  border:1px solid var(--line-soft); border-radius:8px;
+  padding:5px 4px;
+  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  user-select:none;
 }
-.banner .origin{color:var(--muted); font-size:.85rem; font-weight:600}
-.banner .origin b{color:var(--text); font-weight:600}
+.tabs button[aria-pressed="true"]{
+  background:var(--gold); color:#241700; border-color:var(--gold);
+}
+.tabs button:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
 
-/* ---------- Move-Karten ---------- */
-.moves{
+/* ---------- Bühne: skaliert sich selbst, damit nichts scrollt ---------- */
+.stage{
+  flex:1 1 auto; min-height:0;
+  overflow:hidden;
+  padding:0 5px 5px;
+  --u:calc(var(--fs,1) * 16px);
+  font-size:var(--u);
+}
+.stage.overflowing{overflow-y:auto}
+/* Sparmodus: Wird der Inhalt sonst unlesbar klein, weicht der Fließtext
+   den Eingaben. Trainingskarten behalten ihn, dort ist er der Inhalt. */
+.stage.tight .card:not(.drill) .card-note{display:none}
+.stage.tight .card{padding:.4em .45em; gap:.3em}
+.stage.tight .grid{gap:.3em}
+
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));
-  gap:.55rem;
-  padding:0 .75rem;
+  grid-template-columns:repeat(auto-fit,minmax(11em,1fr));
+  gap:.4em;
+  align-content:start;
 }
-.move{
+
+/* ---------- Karten ---------- */
+.card{
   min-width:0;
   background:var(--panel);
   border:1px solid var(--line-soft);
-  border-radius:var(--radius);
-  padding:.6rem .7rem .65rem;
-  display:flex; flex-direction:column; gap:.5rem;
+  border-radius:.55em;
+  padding:.5em .6em;
+  display:flex; flex-direction:column; gap:.4em;
 }
-.move-head{display:flex; align-items:baseline; gap:.4rem; flex-wrap:wrap}
-.move-name{font-size:1.02rem; font-weight:700; letter-spacing:.01em}
-.move-jp{font-size:.75rem; color:var(--muted); font-weight:500}
-.move-note{font-size:.82rem; color:var(--muted); margin:0}
+.card-head{display:flex; align-items:baseline; gap:.35em; flex-wrap:wrap}
+.card-title{font-size:1em; font-weight:700; line-height:1.15}
+.card-sub{font-size:.72em; color:var(--muted); font-weight:500}
+.card-note{margin:0; font-size:.78em; color:var(--muted)}
 
 /* Eingabe-Sequenz */
 .seq{
-  display:flex; flex-wrap:wrap; align-items:center; gap:.28rem;
+  display:flex; flex-wrap:wrap; align-items:center; gap:.22em;
   background:#0E0B22;
   border:1px solid var(--line-soft);
-  border-radius:8px;
-  padding:.42rem .45rem;
+  border-radius:.45em;
+  padding:.3em .32em;
 }
 .dir{
-  width:1.7rem; height:1.7rem; flex:none;
+  width:calc(var(--u) * 1.5); height:calc(var(--u) * 1.5); flex:none;
   display:grid; place-items:center;
-  border-radius:6px;
+  border-radius:.32em;
   background:var(--panel-hi);
   border:1px solid var(--line);
 }
-.dir svg{width:1.1rem; height:1.1rem; fill:none; stroke:var(--text);
-  stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round}
+.dir svg{
+  width:calc(var(--u) * .95); height:calc(var(--u) * .95);
+  fill:none; stroke:var(--text);
+  stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round;
+}
 .charge{
-  display:flex; align-items:center; gap:.3rem;
-  padding:.18rem .3rem .18rem .18rem;
-  border-radius:7px;
+  display:flex; align-items:center; gap:.25em;
+  padding:.14em .28em .14em .14em;
+  border-radius:.4em;
   background:rgba(255,77,61,.13);
   border:1px solid rgba(255,77,61,.5);
 }
 .charge .dir{background:rgba(255,77,61,.18); border-color:rgba(255,77,61,.45)}
 .charge .dir svg{stroke:#FF8E7F}
-.charge span{font-size:.7rem; font-weight:700; letter-spacing:.02em; color:#FF9C8E; white-space:nowrap}
-.seq .op{color:var(--muted); font-weight:700; font-size:.9rem; padding:0 .05rem}
+.charge span{font-size:.64em; font-weight:700; color:#FF9C8E; white-space:nowrap}
+.seq .op{color:var(--muted); font-weight:700; font-size:.82em}
 .motion{
-  font-weight:700; font-size:.85rem;
-  padding:.28rem .5rem; border-radius:7px;
+  font-weight:700; font-size:.74em;
+  padding:.3em .45em; border-radius:.4em;
   background:var(--panel-hi); border:1px solid var(--line);
 }
-.btns{display:flex; align-items:center; gap:.2rem}
-.btns .keys{display:flex; align-items:center; gap:.16rem}
+.btns{display:flex; align-items:center; gap:.18em}
+.keys{display:flex; align-items:center; gap:.13em}
 .key{
-  width:1.55rem; height:1.55rem; flex:none;
+  width:calc(var(--u) * 1.35); height:calc(var(--u) * 1.35); flex:none;
   display:grid; place-items:center;
   border-radius:50%;
-  font-family:Anton,Impact,sans-serif; font-size:.85rem;
+  font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:calc(var(--u) * .8);
   color:#0C0A1A;
   border:1px solid rgba(0,0,0,.35);
   box-shadow:0 1px 0 rgba(255,255,255,.25) inset;
 }
-.key.shoulder{border-radius:6px; width:1.85rem; height:1.25rem; font-size:.75rem}
+.key.shoulder{border-radius:.35em; width:calc(var(--u) * 1.6); height:calc(var(--u) * 1.05); font-size:calc(var(--u) * .68)}
 .key.y{background:var(--btn-y)} .key.x{background:var(--btn-x)} .key.l{background:var(--btn-l)}
 .key.b{background:var(--btn-b)} .key.a{background:var(--btn-a)} .key.r{background:var(--btn-r)}
-.btns .cap{font-size:.66rem; font-weight:700; letter-spacing:.06em; color:var(--muted); text-transform:uppercase}
+.cap{font-size:.6em; font-weight:700; letter-spacing:.05em; color:var(--muted); text-transform:uppercase}
 .tag-all{
-  font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
-  color:#241700; background:var(--gold); padding:.12rem .28rem; border-radius:4px;
+  font-size:.55em; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:#241700; background:var(--gold); padding:.14em .3em; border-radius:.3em;
 }
 
-/* ---------- Legende ---------- */
-.legend{
-  position:fixed; left:0; right:0; bottom:0; z-index:40;
-  background:#12102A; border-top:1px solid var(--line);
+/* ---------- Training ---------- */
+.strength{
+  grid-column:1 / -1;
+  display:flex; align-items:baseline; gap:.45em; flex-wrap:wrap;
+  padding:.4em .6em;
+  border-radius:.5em;
+  border:1px solid var(--line);
+  border-left:.25em solid var(--gold);
+  background:linear-gradient(90deg,var(--panel-hi),var(--panel) 70%);
 }
-.legend-toggle{
-  appearance:none; width:100%; font:inherit; cursor:pointer;
-  display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-  padding:.45rem .75rem;
-  background:transparent; color:var(--muted); border:0;
-  font-size:.7rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+.strength b{
+  font-size:.62em; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold);
 }
-.legend-body{padding:0 .75rem .7rem; display:none; max-height:42vh; overflow-y:auto}
-.legend[data-open="true"] .legend-body{display:block}
-.legend-grid{
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr)); gap:.3rem .6rem;
+.strength span{font-size:.85em}
+.drill{border-left:.18em solid var(--line)}
+.drill .num{
+  flex:none;
+  display:grid; place-items:center;
+  width:calc(var(--u) * 1.25); height:calc(var(--u) * 1.25);
+  border-radius:50%;
+  background:var(--gold); color:#241700;
+  font-family:Anton,Impact,sans-serif; font-weight:400;
+  font-size:calc(var(--u) * .72);
 }
-.legend-row{display:flex; align-items:center; gap:.4rem; font-size:.8rem}
-.legend-row span{color:var(--muted)}
-.legend-note{margin:.5rem 0 0; font-size:.75rem; color:var(--muted)}
-.legend-note b{color:var(--text); font-weight:600}
+.drill .card-head{flex-wrap:nowrap; align-items:flex-start; gap:.4em}
+.drill .card-title{font-size:.9em}
+.drill .card-note{font-size:.8em; color:var(--text)}
 
-/* ---------- Bewegung ---------- */
+/* ---------- Tastenbelegung ---------- */
+.keyrow{display:flex; align-items:center; gap:.45em}
+.keyrow span{font-size:.85em}
+.keyrow em{font-style:normal; color:var(--muted); font-size:.75em}
+.legend-card{gap:.5em}
+.legend-card p{margin:0; font-size:.78em; color:var(--muted)}
+.legend-card p b{color:var(--text); font-weight:600}
+
+/* ---------- Charakter-Auswahl (Vollbild) ---------- */
+.sheet{
+  position:fixed; inset:0; z-index:50;
+  display:flex; flex-direction:column;
+  background:rgba(8,6,20,.97);
+  padding:6px calc(6px + env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom));
+  padding-top:calc(6px + env(safe-area-inset-top));
+}
+.sheet[hidden]{display:none}
+.sheet-head{
+  flex:none; display:flex; align-items:center; gap:6px;
+  padding:2px 2px 6px;
+  font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted);
+}
+.sheet-head button{
+  appearance:none; font:inherit; cursor:pointer; margin-left:auto;
+  background:var(--panel); color:var(--text);
+  border:1px solid var(--line-soft); border-radius:8px;
+  padding:4px 10px; font-size:12px;
+}
+.sheet-grid{
+  flex:1 1 auto; min-height:0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:1fr;
+  gap:5px;
+}
+.chip{
+  appearance:none; font:inherit; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  min-width:0; padding:2px;
+  background:var(--panel); color:var(--text);
+  border:1px solid var(--line-soft); border-radius:9px;
+  font-weight:600; font-size:12px; line-height:1.1; text-align:center;
+}
+.chip .flag{font-size:15px; line-height:1}
+.chip .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.chip[aria-pressed="true"]{
+  background:var(--gold); color:#241700; border-color:var(--gold);
+}
+.chip:focus-visible{outline:2px solid var(--gold); outline-offset:1px}
+
 @media (prefers-reduced-motion:no-preference){
-  .anim-in{animation:rise .22s ease-out both}
-  .moves .move{animation:rise .26s ease-out both; animation-delay:calc(var(--i) * 45ms)}
+  .grid>*{animation:rise .2s ease-out both; animation-delay:calc(var(--i,0) * 30ms)}
 }
-@keyframes rise{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
-
-@media (max-width:420px){
-  .banner h1{font-size:1.55rem}
-  .chips{grid-template-columns:repeat(auto-fill,minmax(5.6rem,1fr))}
-}
+@keyframes rise{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="wordmark">SSF II Specials<small>SNES · Zweiter Screen</small></div>
-  <div class="tools">
-    <button class="tool" id="size-s" data-size="s" aria-pressed="false">A</button>
-    <button class="tool" id="size-m" data-size="m" aria-pressed="true">A</button>
-    <button class="tool" id="size-l" data-size="l" aria-pressed="false">A</button>
-    <button class="tool" id="fs">Vollbild</button>
+
+<div class="app">
+  <div class="bar">
+    <button class="step" id="prev" aria-label="Vorheriger Charakter">‹</button>
+    <button class="who" id="who" aria-label="Charakter wählen">
+      <span class="flag" id="who-flag">🇯🇵</span><b id="who-name">Ryu</b><span class="caret">▼</span>
+    </button>
+    <button class="step" id="next" aria-label="Nächster Charakter">›</button>
+    <button class="icon" id="fs" aria-label="Vollbild">⛶</button>
   </div>
-</header>
 
-<details class="picker" id="picker">
-  <summary>
-    <span class="picker-caret" aria-hidden="true">▾</span>
-    <span class="picker-label">Charakter wechseln</span>
-    <b class="picker-current" id="picker-current">Ryu</b>
-  </summary>
-  <nav class="roster" id="roster" aria-label="Charakterauswahl"></nav>
-</details>
+  <div class="tabs" role="tablist">
+    <button data-tab="specials" aria-pressed="true">Specials</button>
+    <button data-tab="training" aria-pressed="false">Training</button>
+    <button data-tab="keys" aria-pressed="false">Tasten</button>
+  </div>
 
-<div class="banner" id="banner">
-  <h1 id="fighter-name">Ryu</h1>
-  <div class="origin" id="fighter-origin"></div>
+  <div class="stage" id="stage"><div class="grid" id="view"></div></div>
 </div>
 
-<main class="moves" id="moves"></main>
-
-<div class="legend" id="legend" data-open="false">
-  <button class="legend-toggle" id="legend-toggle" aria-expanded="false">
-    <span>Tastenbelegung (SNES-Standard)</span><span id="legend-arrow">▲</span>
-  </button>
-  <div class="legend-body">
-    <div class="legend-grid">
-      <div class="legend-row"><b class="key y">Y</b><span>Punch schwach</span></div>
-      <div class="legend-row"><b class="key x">X</b><span>Punch mittel</span></div>
-      <div class="legend-row"><b class="key shoulder l">L</b><span>Punch stark</span></div>
-      <div class="legend-row"><b class="key b">B</b><span>Kick schwach</span></div>
-      <div class="legend-row"><b class="key a">A</b><span>Kick mittel</span></div>
-      <div class="legend-row"><b class="key shoulder r">R</b><span>Kick stark</span></div>
-    </div>
-    <p class="legend-note">Alle Richtungen gelten für <b>Blick nach rechts</b>: <b>→</b> ist immer „zum Gegner hin“, <b>←</b> „von ihm weg“. Drei Knöpfe nebeneinander heißen: <b>einer davon genügt</b> – der schwache ist schnell, der starke stärker und langsamer. Rot umrandete Felder heißen <b>halten</b> – Richtung ca. 2 Sekunden gedrückt lassen, dann die Folge­eingabe. Stand: <b>Super Street Fighter II – The New Challengers</b> (SNES). Super-Combos gibt es hier noch nicht, die kamen erst mit Super Turbo.</p>
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-head">
+    <span>Charakter wählen</span>
+    <button id="sheet-close">Schließen</button>
   </div>
+  <div class="sheet-grid" id="sheet-grid"></div>
 </div>
 
 <script>
-/* ---------------- Daten ---------------- */
-/* Eingaben als Token-Liste:
-   d:'f|b|u|d|uf|df|ub|db'  Richtung
-   c:'b|d|...'              Richtung halten (Charge)
-   m:'Text'                 Bewegung als Text (z.B. 360°)
-   k:'P|K|PPP|KKK'          Buttons
-   t:'Text'                 freier Zusatz                                     */
+/* =========================================================================
+   Daten
+   Eingaben als Token-Liste:
+     D("f|b|u|d|uf|df|ub|db")  Richtung
+     C("b|d|…")                Richtung halten (Ladebewegung)
+     M("Text")                 Bewegung als Text, z. B. 360° Kreis
+     K("P|K|PPP|KKK")          Knöpfe
+     T("Text")                 freier Zusatz
+   ========================================================================= */
 
 const D = d => ({d});
 const C = d => ({c:d});
@@ -318,90 +335,148 @@ const T = t => ({t});
 
 const ROSTER = [
   {group:"Die acht Originale", chars:[
+
     {id:"ryu", name:"Ryu", flag:"🇯🇵", land:"Japan", style:"Ansatsuken",
+     strength:"Der Maßstab: Der Feuerball zwingt zu einer Reaktion, der Shoryuken bestraft sie.",
      moves:[
        {n:"Hadoken", jp:"Feuerball", seq:[D("d"),D("df"),D("f"),K("P")],
-        note:"Y = langsam, L = schnell. Grundlage für alles: Feuerball werfen, Reaktion abwarten."},
+        note:"Y fliegt langsam, L schnell. Grundlage für alles."},
        {n:"Shoryuken", jp:"Drachenfaust", seq:[D("f"),D("d"),D("df"),K("P")],
         note:"Der Konter gegen Sprünge. Beim Start unverwundbar, danach fällt Ryu ungeschützt."},
        {n:"Tatsumaki Senpukyaku", jp:"Hurricane Kick", seq:[D("d"),D("db"),D("b"),K("K")],
-        note:"Geht auch im Sprung. Fliegt über Feuerbälle hinweg."}
+        note:"Geht auch im Sprung und bringt Ryu schnell durch den Screen."}
+     ],
+     drills:[
+       {n:"Takt brechen", t:"Zehn Feuerbälle mit bewusst ungleichen Pausen – mal sofort, mal nach zwei Sekunden. Wer immer im selben Takt wirft, wird übersprungen."},
+       {n:"Sprung abfangen", t:"Nur Feuerball werfen und warten. Sobald der Gegner abspringt: Shoryuken. Ziel sind zehn saubere Treffer hintereinander."},
+       {n:"Nach dem Sprung weitermachen", t:"Sprungkick, landen, geduckter schwacher Kick, Feuerball. Der Sprung ist der Anfang einer Folge, nicht das Ende."}
      ]},
+
     {id:"honda", name:"E. Honda", flag:"🇯🇵", land:"Japan", style:"Sumo",
+     strength:"Ladung im Blocken aufbauen, auf Tuchfühlung explodieren.",
      moves:[
        {n:"Hundred Hand Slap", jp:"Hyakuretsu Harite", seq:[K("P"),T("mehrfach schnell tippen")],
-        note:"Einfach den Punch-Knopf hämmern. Bricht die Deckung auf kurze Distanz auf."},
+        note:"Punch-Knopf hämmern. Bricht die Deckung auf kurze Distanz auf."},
        {n:"Sumo Headbutt", jp:"Sumo Kopfstoß", seq:[C("b"),D("f"),K("P")],
         note:"Rammt quer über den Screen. Y kurz, L über die volle Distanz."},
        {n:"Sumo Smash", jp:"Sumo Splash", seq:[C("d"),D("u"),K("K")],
         note:"Springt hoch und landet mit dem Hintern – gut gegen Gegner, die unten campen."}
+     ],
+     drills:[
+       {n:"Ladung im Blocken", t:"Eine Runde nur rückwärts blocken – die Ladung läuft dabei mit. Nach jedem geblockten Angriff einen Headbutt herauslassen."},
+       {n:"Handschlag nur in Reichweite", t:"Hundred Hand Slap ausschließlich direkt am Gegner. Das Gefühl für „nah genug\" ist die eigentliche Übung."},
+       {n:"Über den Ducker", t:"Sumo Smash gegen einen Gegner, der unten blockt. Trainiert die zweite Ladung nach unten parallel zur ersten."}
      ]},
+
     {id:"blanka", name:"Blanka", flag:"🇧🇷", land:"Brasilien", style:"Wildkampf",
+     strength:"Unberechenbar: Elektro von unten, die Rolle als Konter.",
      moves:[
        {n:"Rolling Attack", jp:"Rolling Ball", seq:[C("b"),D("f"),K("P")],
         note:"Die Kugel nach vorn. Geblockt ist sie unsicher – nicht blind spammen."},
        {n:"Backstep Roll", jp:"Rückwärtsrolle", seq:[C("b"),D("f"),K("K")],
-        note:"Neu in Super: rollt erst zurück, dann nach vorn. Gut, um Feuerbällen auszuweichen."},
+        note:"Neu in Super: rollt erst zurück, dann nach vorn. Gut gegen Feuerbälle."},
        {n:"Vertical Rolling", jp:"Up Ball", seq:[C("d"),D("u"),K("K")],
         note:"Senkrecht nach oben – Blankas Anti-Air."},
        {n:"Electric Thunder", jp:"Denkou Ball", seq:[K("P"),T("mehrfach schnell tippen")],
-        note:"Trifft Gegner direkt vor Blanka und schlägt Sprünge aus der Luft."}
+        note:"Trifft direkt vor Blanka und schlägt Sprünge aus der Luft."}
+     ],
+     drills:[
+       {n:"Rolle nur als Antwort", t:"Rolling Attack ausschließlich, wenn der Gegner einen Feuerball wirft. Blind gerollt heißt geblockt und bestraft."},
+       {n:"Elektro als Dach", t:"Den Gegner anspringen lassen und Electric Thunder auslösen, bevor er landet. Knopf hämmern, nicht drücken."},
+       {n:"Rückwärts denken", t:"Backstep Roll üben, bis er als Ausweichmanöver sitzt: erst zurück aus der Gefahr, dann hinein."}
      ]},
+
     {id:"guile", name:"Guile", flag:"🇺🇸", land:"USA", style:"Military Martial Arts",
+     strength:"Geduld: Sonic Boom hält vorn frei, der Flash Kick hält oben frei.",
      moves:[
        {n:"Sonic Boom", jp:"Schallwelle", seq:[C("b"),D("f"),K("P")],
-        note:"Lädt sich beim Ducken mit auf – Guile spielt sich fast komplett aus der Hocke."},
+        note:"Lädt sich beim Ducken mit auf – Guile spielt fast komplett aus der Hocke."},
        {n:"Somersault Kick", jp:"Flash Kick", seq:[C("d"),D("u"),K("K")],
         note:"Der klassische Anti-Air. Ladung halten, bis der Gegner springt."}
+     ],
+     drills:[
+       {n:"Eine Runde in der Hocke", t:"Geduckt-rückwärts sitzen bleiben und nur Sonic Boom werfen. Beide Ladungen laufen dabei gleichzeitig mit."},
+       {n:"Hinter dem Boom herlaufen", t:"Boom werfen und sofort hinterhergehen. Der Gegner muss blocken – dann Wurf oder tiefer Kick."},
+       {n:"Flash Kick nur auf Sprünge", t:"Zehn Sprünge des Gegners abfangen, ohne ein einziges Mal blind zu treten."}
      ]},
+
     {id:"ken", name:"Ken", flag:"🇺🇸", land:"USA", style:"Ansatsuken",
+     strength:"Nahkampf: Kens starker Shoryuken macht den meisten Schaden im Spiel.",
      moves:[
        {n:"Hadoken", jp:"Feuerball", seq:[D("d"),D("df"),D("f"),K("P")],
         note:"Wie bei Ryu, minimal langsamer – Ken lebt vom Nahkampf."},
        {n:"Shoryuken", jp:"Drachenfaust", seq:[D("f"),D("d"),D("df"),K("P")],
         note:"Kens Markenzeichen: die L-Version trifft mehrfach und macht deutlich mehr Schaden."},
        {n:"Tatsumaki Senpukyaku", jp:"Hurricane Kick", seq:[D("d"),D("db"),D("b"),K("K")],
-        note:"Auch im Sprung. Bewegt Ken schnell durch den Screen."}
+        note:"Auch in der Luft. Schließt schnell Distanz."}
+     ],
+     drills:[
+       {n:"Drachenfaust aus dem Lauf", t:"Vorwärtsgehen, dann sofort die Drachenfaust-Eingabe mit starkem Punch. Ohne Anlauf, ohne Vorbereitung – zehnmal sauber."},
+       {n:"Sprung rein, Faust raus", t:"Sprungkick, landen, sofort Shoryuken. Das ist Kens größtes Schadensfenster."},
+       {n:"Eckendruck", t:"Gegner in die Ecke drängen, dann abwechseln zwischen tiefem Kick und Wurf. Nie zweimal dasselbe hintereinander."}
      ]},
+
     {id:"chunli", name:"Chun-Li", flag:"🇨🇳", land:"China", style:"Chinesisches Kung Fu",
+     strength:"Tempo: die schnellsten Beine im Spiel – und zwei Ladungen gleichzeitig.",
      moves:[
        {n:"Kikoken", jp:"Energieball", seq:[C("b"),D("f"),K("P")],
-        note:"Neu in Super: endlich ein eigenes Geschoss – fliegt aber nicht über den ganzen Screen."},
+        note:"Neu in Super: endlich ein eigenes Geschoss, fliegt aber nicht über den ganzen Screen."},
        {n:"Spinning Bird Kick", jp:"Hazan Tenshou Kyaku", seq:[C("d"),D("u"),K("K")],
-        note:"Dreht waagerecht durch die Luft, trifft mehrfach."},
+        note:"Dreht waagerecht durch die Luft und trifft mehrfach."},
        {n:"Hyakuretsukyaku", jp:"Lightning Legs", seq:[K("K"),T("mehrfach schnell tippen")],
         note:"Kick-Knopf hämmern. Der schnellste Weg zu viel Schaden aus der Nähe."},
        {n:"Head Stomp", jp:"Sprungtritt", seq:[T("im Sprung"),D("d"),K("K")],
         note:"Springt vom Kopf des Gegners ab – direkt danach nochmal Kick für den Nachschlag."}
+     ],
+     drills:[
+       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten: das lädt Kikoken und Spinning Bird zusammen auf. Abwechselnd auslösen, ohne die Deckung zu verlassen."},
+       {n:"Beine auf Knopfdruck", t:"Kick-Knopf eine Sekunde lang hämmern, bis die Lightning Legs zuverlässig kommen. Erst dann im Kampf einsetzen."},
+       {n:"Von oben nerven", t:"Head Stomp und direkt wieder abspringen, ohne zu landen. Der Gegner kommt nicht zum Zug."}
      ]},
+
     {id:"zangief", name:"Zangief", flag:"🇷🇺", land:"Russland", style:"Wrestling",
+     strength:"Ein einziger Griff kann die Runde entscheiden.",
      moves:[
        {n:"Spinning Piledriver", jp:"Screw Piledriver", seq:[M("360° Kreis"),K("P")],
-        note:"Direkt am Gegner, im Sprung eingegeben, damit Zangief nicht selbst hochspringt. Der stärkste Wurf im Spiel."},
+        note:"Direkt am Gegner. Der stärkste Wurf im Spiel."},
        {n:"Flying Power Bomb", jp:"Running Bear Grab", seq:[M("360° Kreis"),K("K")],
-        note:"Neu in Super: läuft ein Stück auf den Gegner zu und greift – funktioniert auch aus mittlerer Distanz."},
+        note:"Neu in Super: läuft ein Stück auf den Gegner zu und greift – auch aus mittlerer Distanz."},
        {n:"Double Lariat", jp:"Spinning Clothesline", seq:[K("PPP")],
-        note:"Alle drei Punches gleichzeitig. Dreht sich und schlägt fast alles aus der Luft."},
+        note:"Alle drei Punches. Dreht sich und schlägt fast alles aus der Luft."},
        {n:"Quick Lariat", jp:"Schnelle Drehung", seq:[K("KKK")],
         note:"Alle drei Kicks: kürzer und schneller als der Double Lariat."}
+     ],
+     drills:[
+       {n:"Drehen ohne Springen", t:"Die 360°-Drehung zügig ausführen und den Punch drücken, bevor die Figur abhebt. Zehnmal ohne einen einzigen Sprung."},
+       {n:"Lariat als Dach", t:"Alle drei Punches, sobald jemand springt. Zangiefs bester Anti-Air – und er braucht keine Ladung dafür."},
+       {n:"Kleben bleiben", t:"Geblockter schwacher Angriff, direkt danach der Griff. Der Gegner rechnet mit dem nächsten Schlag, nicht mit dem Wurf."}
      ]},
+
     {id:"dhalsim", name:"Dhalsim", flag:"🇮🇳", land:"Indien", style:"Yoga",
+     strength:"Reichweite: er trifft aus Distanzen, in denen andere nichts erreichen.",
      moves:[
        {n:"Yoga Fire", jp:"Feuerspucke", seq:[D("d"),D("df"),D("f"),K("P")],
         note:"Fliegt langsam – ideal, um dahinter nachzurücken."},
        {n:"Yoga Flame", jp:"Flammenstoß", seq:[D("f"),D("df"),D("d"),D("db"),D("b"),K("P")],
         note:"Halbkreis rückwärts. Kurze Reichweite, dafür viel Schaden."},
        {n:"Yoga Blast", jp:"Flamme nach oben", seq:[D("f"),D("df"),D("d"),D("db"),D("b"),K("K")],
-        note:"Dieselbe Bewegung mit Kick – Dhalsims Anti-Air gegen Springer."},
-       {n:"Yoga Teleport (vorwärts)", jp:"nach vorn", seq:[D("f"),D("d"),D("df"),K("PPP")],
-        note:"Alle drei Punches oder alle drei Kicks. Punches = weiter weg, Kicks = näher dran."},
-       {n:"Yoga Teleport (rückwärts)", jp:"nach hinten", seq:[D("b"),D("d"),D("db"),K("PPP")],
-        note:"Rettet aus der Ecke. Beim Auftauchen ist Dhalsim kurz angreifbar."}
+        note:"Dieselbe Bewegung mit Kick – Dhalsims Anti-Air."},
+       {n:"Yoga Teleport", jp:"Ortswechsel",
+        seq:[T("vor"),D("f"),D("d"),D("df"),K("PPP")],
+        seq2:[T("zurück"),D("b"),D("d"),D("db"),K("PPP")],
+        note:"Alle drei Punches oder alle drei Kicks. Punches landen weiter weg, Kicks näher dran. Nach hinten rettet aus der Ecke – beim Auftauchen ist Dhalsim kurz angreifbar."}
+     ],
+     drills:[
+       {n:"Eine Runde auf Abstand", t:"Nur gestreckte Arme und Beine benutzen, kein einziger Nahkampf-Angriff. Trainiert das Gefühl für die eigene Reichweite."},
+       {n:"Feuer als Vorhut", t:"Yoga Fire werfen und dahinter nachrücken. Dass der Ball langsam ist, ist hier der Vorteil."},
+       {n:"Ecke verlassen", t:"In der Ecke den Teleport nach hinten üben. Beim Auftauchen ist Dhalsim kurz offen – solange, bis das Timing sitzt."}
      ]}
   ]},
 
   {group:"Die vier neuen Herausforderer", chars:[
+
     {id:"cammy", name:"Cammy", flag:"🇬🇧", land:"Großbritannien", style:"Spezialeinheit",
+     strength:"Druck: schnell rein, Schaden setzen, schnell wieder raus.",
      moves:[
        {n:"Spiral Arrow", jp:"Cannon Drill", seq:[D("d"),D("df"),D("f"),K("K")],
         note:"Bohrt sich flach über den Boden. Geblockt steht Cammy ungünstig – sparsam einsetzen."},
@@ -409,89 +484,145 @@ const ROSTER = [
         note:"Cammys Drachenfaust auf Kick. Der Anti-Air."},
        {n:"Axel Spin Knuckle", jp:"Spin Knuckle", seq:[D("b"),D("db"),D("d"),D("df"),D("f"),K("P")],
         note:"Halbkreis vorwärts. Die Y-Version läuft durch Feuerbälle hindurch."}
+     ],
+     drills:[
+       {n:"Spiral Arrow nur als Abschluss", t:"Nie zum Eröffnen benutzen, nur um eine Folge zu beenden. Geblockt steht Cammy sonst im Nachteil."},
+       {n:"Cannon Spike als Dach", t:"Zehn Sprünge abfangen. Dieselbe Eingabe wie ein Shoryuken, nur mit Kick – bis die Bewegung ohne Nachdenken kommt."},
+       {n:"Durch den Feuerball", t:"Spin Knuckle mit dem schwachen Punch gegen einen Feuerball-Gegner. Nur die Y-Version geht hindurch."}
      ]},
+
     {id:"thawk", name:"T. Hawk", flag:"🇲🇽", land:"Mexiko", style:"Thunderfoot-Stil",
+     strength:"Griff mit Reichweite – und ein Sturzflug, mit dem niemand rechnet.",
      moves:[
        {n:"Mexican Typhoon", jp:"Storm Hammer", seq:[M("360° Kreis"),K("P")],
-        note:"Der Griff aus nächster Nähe – wie bei Zangief am besten im Sprung eingeben."},
+        note:"Der Griff aus nächster Nähe."},
        {n:"Tomahawk Buster", jp:"Thunder Strike", seq:[D("f"),D("d"),D("df"),K("P")],
-        note:"Steigt schräg nach oben. Anti-Air und Wegkommen aus der Ecke."},
+        note:"Steigt schräg nach oben. Anti-Air und Weg aus der Ecke."},
        {n:"Condor Dive", jp:"The Hawk", seq:[T("im Sprung"),K("PPP")],
         note:"Alle drei Punches in der Luft: stürzt schräg nach unten auf den Gegner."}
+     ],
+     drills:[
+       {n:"Drehen ohne Springen", t:"Wie bei Zangief: die 360°-Drehung zügig, den Punch vor dem Absprung. Zehnmal ohne Sprung."},
+       {n:"Von oben angreifen", t:"Condor Dive aus dem Sprung statt eines normalen Sprungkicks. Genau damit rechnet der Gegner nicht."},
+       {n:"Buster als Dach", t:"Tomahawk Buster nur gegen Springer, nie blind. Er hat die Reichweite dafür – aber nur nach oben."}
      ]},
-    {id:"feilong", name:"Fei Long", flag:"🇭🇰", land:"Hongkong", style:"Kung Fu (Jeet-Kune-Do-Stil)",
+
+    {id:"feilong", name:"Fei Long", flag:"🇭🇰", land:"Hongkong", style:"Kung Fu",
+     strength:"Die Schlagserie: sitzt der erste Treffer, folgen zwei weitere.",
      moves:[
        {n:"Rekkaken", jp:"Flammenschlagserie", seq:[D("d"),D("df"),D("f"),K("P")],
-        note:"Bis zu dreimal hintereinander eingeben – jeder Schlag sieht anders aus. Nicht immer alle drei durchziehen, sonst wird man bestraft."},
+        note:"Bis zu dreimal hintereinander eingeben – jeder Schlag sieht anders aus."},
        {n:"Shienkyaku", jp:"Steigender Flammentritt", seq:[D("b"),D("d"),D("db"),K("K")],
         note:"Umgekehrte Drachenfaust-Bewegung, also nach hinten. Fei Longs Anti-Air."}
+     ],
+     drills:[
+       {n:"Serie sauber durchziehen", t:"Rekkaken dreimal hintereinander, ohne dass die Eingabe stockt. Erst die Mechanik, dann der Kampf."},
+       {n:"Nach dem Zweiten stoppen", t:"Bewusst abbrechen. Wer immer alle drei zieht, wird berechenbar und nach dem dritten Schlag bestraft."},
+       {n:"Rückwärts-Drachenfaust", t:"Der Shienkyaku hat die spiegelverkehrte Eingabe. Zehn Anti-Airs, bis die Richtung sitzt."}
      ]},
+
     {id:"deejay", name:"Dee Jay", flag:"🇯🇲", land:"Jamaika", style:"Kickboxen",
+     strength:"Zwei Ladungen, ein Rhythmus: vorne und oben gleichzeitig bedroht.",
      moves:[
        {n:"Air Slasher", jp:"Max Out", seq:[C("b"),D("f"),K("P")],
-        note:"Dee Jays Geschoss. Ladung kommt beim Ducken automatisch mit."},
+        note:"Dee Jays Geschoss. Die Ladung kommt beim Ducken automatisch mit."},
        {n:"Double Rolling Sobat", jp:"Dread Kick", seq:[C("b"),D("f"),K("K")],
         note:"Zwei Tritte nach vorn – schließt die Distanz nach einem Air Slasher."},
        {n:"Jackknife Maximum", jp:"Jackknife Kick", seq:[C("d"),D("u"),K("K")],
         note:"Salto nach oben, Dee Jays Anti-Air."}
+     ],
+     drills:[
+       {n:"Doppelte Ladung", t:"Schräg zurück-unten halten und abwechselnd Air Slasher und Jackknife auslösen, ohne die Deckung zu verlassen."},
+       {n:"Slasher, dann nachsetzen", t:"Air Slasher werfen und sofort den Dread Kick hinterher. Der Gegner blockt noch, wenn der Tritt ankommt."},
+       {n:"Jackknife nur oben", t:"Zehn Sprünge abfangen, ohne einmal ins Leere zu treten."}
      ]}
   ]},
 
   {group:"Die vier Bosse", chars:[
+
     {id:"balrog", name:"Balrog", flag:"🇺🇸", land:"USA", style:"Boxen",
+     strength:"Tempo: er ist auf der anderen Seite, bevor der Gegner reagiert hat.",
      moves:[
        {n:"Dash Straight", jp:"Dash Punch", seq:[C("b"),D("f"),K("P")],
         note:"Gerade nach vorn. Y kurz, L über den ganzen Screen."},
        {n:"Dash Upper", jp:"Dash Swing Blow", seq:[C("b"),D("f"),K("K")],
         note:"Aufwärtshaken im Anlauf – erwischt auch Springer."},
-       {n:"Dash Low Straight", jp:"tiefer Dash", seq:[C("b"),D("df"),K("P")],
-        note:"Neu in Super: Eingabe endet auf schräg-unten statt vorn. Trifft tief und lädt die Kopfstoß-Ladung gleich wieder mit auf."},
-       {n:"Dash Low Smash", jp:"tiefer Haken", seq:[C("b"),D("df"),K("K")],
-        note:"Dieselbe Eingabe mit Kick – wirft den Gegner um."},
+       {n:"Dash tief", jp:"Low Straight / Low Smash",
+        seq:[C("b"),D("df"),K("P")],
+        seq2:[C("b"),D("df"),K("K")],
+        note:"Neu in Super: die Eingabe endet auf schräg-unten statt vorn. Trifft tief; die Kick-Version wirft den Gegner um."},
        {n:"Buffalo Head", jp:"Kopfstoß", seq:[C("d"),D("u"),K("P")],
         note:"Beim Start unverwundbar – Balrogs Notausgang gegen Druck."},
-       {n:"Turn Punch", jp:"Screw Smash", seq:[K("PPP"),T("gedrückt halten, dann loslassen")],
-        note:"Alle drei Punches (oder alle drei Kicks) halten und loslassen. Je länger gehalten, desto stärker."}
+       {n:"Turn Punch", jp:"Screw Smash", seq:[K("PPP"),T("halten, dann loslassen")],
+        note:"Alle drei Punches (oder Kicks) halten. Je länger gehalten, desto stärker."}
+     ],
+     drills:[
+       {n:"Hoch und tief mischen", t:"Dash Straight abwechselnd auf vorwärts und auf schräg-unten enden lassen. Der Gegner muss raten, wo er blockt."},
+       {n:"Turn Punch im Blocken laden", t:"Alle drei Punches gedrückt halten, während man blockt. Loslassen, sobald der Gegner sich vorwagt."},
+       {n:"Kopfstoß als Notausgang", t:"Buffalo Head aus dem Druck heraus. Er ist beim Start unverwundbar – aber nur, wenn die Ladung steht."}
      ]},
+
     {id:"vega", name:"Vega", flag:"🇪🇸", land:"Spanien", style:"Stierkampf & Ninjutsu",
+     strength:"Die Klaue hält jeden auf Abstand, die Wand bringt ihn von oben zurück.",
      moves:[
        {n:"Rolling Crystal Flash", jp:"Rolling Attack", seq:[C("b"),D("f"),K("P")],
         note:"Rollt mit den Klauen voraus nach vorn."},
        {n:"Sky High Claw", jp:"Wandsprung", seq:[C("d"),D("u"),K("P")],
         note:"Neu in Super: springt an die Wand und schießt waagerecht quer über den Screen."},
-       {n:"Flying Barcelona Attack", jp:"Izuna-Angriff", seq:[C("d"),D("u"),K("K")],
-        note:"An die Wand und im Bogen zurück. Nah am Gegner Punch drücken für den Izuna Drop (Wurf aus der Luft)."},
+       {n:"Flying Barcelona", jp:"Izuna-Angriff", seq:[C("d"),D("u"),K("K")],
+        note:"An die Wand und im Bogen zurück. Nah am Gegner Punch drücken für den Izuna Drop."},
        {n:"Backflip", jp:"Back Slash", seq:[K("PPP")],
         note:"Alle drei Punches: großer Rückwärtssalto. Alle drei Kicks: kurze Version."}
+     ],
+     drills:[
+       {n:"Auf Klauendistanz bleiben", t:"Eine Runde nur auf maximaler Reichweite angreifen und nie nachrücken. Vegas Angriffe treffen weiter, als es aussieht."},
+       {n:"Izuna treffen", t:"Flying Barcelona, dann Punch direkt am Gegner. Zehn erfolgreiche Griffe – das Timing ist die ganze Übung."},
+       {n:"Backflip statt Block", t:"Den Rückwärtssalto zum Ausweichen benutzen. Vega ist schnell genug, danach sofort wieder anzugreifen."}
      ]},
+
     {id:"sagat", name:"Sagat", flag:"🇹🇭", land:"Thailand", style:"Muay Thai",
+     strength:"Zwei Höhen, ein Screen: Sagat bestimmt, wo der Kampf stattfindet.",
      moves:[
        {n:"Tiger Shot (hoch)", jp:"Tiger Shot", seq:[D("d"),D("df"),D("f"),K("P")],
-        note:"Auf Brusthöhe. Zusammen mit dem tiefen Tiger Shot sperrt Sagat den halben Screen ab."},
+        note:"Auf Brusthöhe. Zusammen mit dem tiefen sperrt er den halben Screen ab."},
        {n:"Low Tiger Shot", jp:"Ground Tiger Shot", seq:[D("d"),D("df"),D("f"),K("K")],
         note:"Rollt am Boden entlang – muss geduckt geblockt werden."},
        {n:"Tiger Uppercut", jp:"Tiger Blow", seq:[D("f"),D("d"),D("df"),K("P")],
         note:"Riesige Reichweite nach oben, Sagats Anti-Air."},
        {n:"Tiger Knee", jp:"Tiger Knee Crush", seq:[D("f"),D("d"),D("df"),K("K")],
-        note:"Springt mit dem Knie voran nach vorn. In Super mit derselben Bewegung wie der Uppercut – nur Kick statt Punch."}
+        note:"Springt mit dem Knie voran nach vorn. Gleiche Bewegung wie der Uppercut, nur mit Kick."}
+     ],
+     drills:[
+       {n:"Oben und unten mischen", t:"Tiger Shot abwechselnd hoch und tief. Der Gegner muss ständig die Deckung wechseln – genau davon lebt Sagat."},
+       {n:"Uppercut nur nach oben", t:"Zehn Sprünge abfangen. Er hat die größte Reichweite im Spiel, blind ausgeführt ist er trotzdem der eigene Untergang."},
+       {n:"Knie zum Aufholen", t:"Tiger Knee benutzen, um Distanz zu schließen, wenn der Gegner Richtung Ecke ausweicht."}
      ]},
+
     {id:"bison", name:"M. Bison", flag:"🇹🇭", land:"Thailand", style:"Psycho Power",
+     strength:"Er ist schneller da, als der Gegner reagieren kann.",
      moves:[
        {n:"Psycho Crusher", jp:"Psycho-Sturzflug", seq:[C("b"),D("f"),K("P")],
         note:"Fliegt waagerecht durch den Screen. Geblockt steht Bison sehr ungünstig."},
        {n:"Double Knee Press", jp:"Scissor Kick", seq:[C("b"),D("f"),K("K")],
         note:"Bisons Arbeitspferd: schnell rein, zwei Treffer, sicherer als der Psycho Crusher."},
        {n:"Head Press", jp:"Kopfsprung", seq:[C("d"),D("u"),K("K")],
-        note:"Springt auf den Kopf des Gegners. Danach Punch drücken für den Somersault Skull Diver hinterher."},
+        note:"Springt auf den Kopf des Gegners. Danach Punch für den Somersault Skull Diver."},
        {n:"Devil Reverse", jp:"Teufelsdrehung", seq:[C("d"),D("u"),K("P")],
         note:"Fliegt über den Gegner hinweg. Punch drücken für den Schlag nach unten."}
+     ],
+     drills:[
+       {n:"Scissor statt Crusher", t:"Eine Runde nur Double Knee Press. Er ist schneller und sicherer als der Psycho Crusher – und trifft zweimal."},
+       {n:"Kopfsprung-Kette", t:"Head Press, dann Punch für den Skull Diver. Zehnmal die ganze Kette ohne Aussetzer."},
+       {n:"Ladung im Blocken", t:"Rückwärts blocken hält die Ladung. Sofort nach dem geblockten Angriff kontern, bevor der Gegner nachsetzt."}
      ]}
   ]}
 ];
 
 const ALL = ROSTER.flatMap(g => g.chars);
 
-/* ---------------- Rendering ---------------- */
+/* =========================================================================
+   Bausteine
+   ========================================================================= */
 
 const ARROW_ROT = {f:0, df:45, d:90, db:135, b:180, ub:225, u:270, uf:315};
 const DIR_LABEL = {f:"vorwärts", df:"schräg vorwärts-unten", d:"unten", db:"schräg zurück-unten",
@@ -502,7 +633,6 @@ const KEYSETS = {
   PPP:[["Y","y"],["X","x"],["L","l"]],
   KKK:[["B","b"],["A","a"],["R","r"]]
 };
-const KEYCAP = {P:"Punch", K:"Kick", PPP:"Punch", KKK:"Kick"};
 
 function el(tag, cls, html){
   const n = document.createElement(tag);
@@ -519,19 +649,19 @@ function arrow(dir){
   return n;
 }
 
+function keyChip(letter, cls){
+  const shoulder = (letter === "L" || letter === "R") ? " shoulder" : "";
+  return el("b","key " + cls + shoulder, letter);
+}
+
 function keyGroup(code){
   const wrap = el("div","btns");
   const keys = el("div","keys");
-  KEYSETS[code].forEach(([letter, cls]) => {
-    const shoulder = (letter === "L" || letter === "R") ? " shoulder" : "";
-    keys.appendChild(el("b","key " + cls + shoulder, letter));
-  });
+  KEYSETS[code].forEach(([letter, cls]) => keys.appendChild(keyChip(letter, cls)));
   wrap.appendChild(keys);
-  if(code.length === 3){
-    wrap.appendChild(el("span","tag-all","alle 3"));
-  }else{
-    wrap.appendChild(el("span","cap","eine davon"));
-  }
+  wrap.appendChild(code.length === 3
+    ? el("span","tag-all","alle 3")
+    : el("span","cap","eine davon"));
   return wrap;
 }
 
@@ -553,115 +683,243 @@ function renderSeq(seq){
   return box;
 }
 
-function renderFighter(id){
-  const f = ALL.find(c => c.id === id) || ALL[0];
+/* =========================================================================
+   Ansichten
+   ========================================================================= */
 
-  document.getElementById("fighter-name").textContent = f.name;
-  document.getElementById("fighter-origin").innerHTML =
-    f.flag + " <b>" + f.land + "</b> · " + f.style + " · " + f.moves.length + " Specials";
-
-  const banner = document.getElementById("banner");
-  banner.classList.remove("anim-in");
-  void banner.offsetWidth;
-  banner.classList.add("anim-in");
-
-  const host = document.getElementById("moves");
-  host.textContent = "";
-  f.moves.forEach((mv, i) => {
-    const card = el("article","move");
-    card.style.setProperty("--i", i);
-    const head = el("div","move-head");
-    head.appendChild(el("h2","move-name", mv.n));
-    head.appendChild(el("span","move-jp", mv.jp));
+function viewSpecials(f){
+  return f.moves.map(mv => {
+    const card = el("article","card");
+    const head = el("div","card-head");
+    head.appendChild(el("h2","card-title", mv.n));
+    head.appendChild(el("span","card-sub", mv.jp));
     card.appendChild(head);
     card.appendChild(renderSeq(mv.seq));
-    card.appendChild(el("p","move-note", mv.note));
-    host.appendChild(card);
+    if(mv.seq2) card.appendChild(renderSeq(mv.seq2));
+    card.appendChild(el("p","card-note", mv.note));
+    return card;
   });
+}
 
-  document.getElementById("picker-current").textContent = f.name;
-  document.querySelectorAll(".chip").forEach(c => {
-    c.setAttribute("aria-pressed", String(c.dataset.id === f.id));
+function viewTraining(f){
+  const out = [];
+  const s = el("div","strength");
+  s.appendChild(el("b",null,"Stärke"));
+  s.appendChild(el("span",null, f.strength));
+  out.push(s);
+  f.drills.forEach((d, i) => {
+    const card = el("article","card drill");
+    const head = el("div","card-head");
+    head.appendChild(el("span","num", String(i + 1)));
+    head.appendChild(el("h2","card-title", d.n));
+    card.appendChild(head);
+    card.appendChild(el("p","card-note", d.t));
+    out.push(card);
   });
+  return out;
+}
+
+function viewKeys(){
+  const out = [];
+
+  const punch = el("article","card legend-card");
+  punch.appendChild(el("h2","card-title","Punch"));
+  [["Y","y","schwach – schnell, wenig Schaden"],
+   ["X","x","mittel"],
+   ["L","l","stark – langsam, viel Schaden"]].forEach(([le,cl,txt]) => {
+    const row = el("div","keyrow");
+    row.appendChild(keyChip(le, cl));
+    row.appendChild(el("span",null,txt));
+    punch.appendChild(row);
+  });
+  out.push(punch);
+
+  const kick = el("article","card legend-card");
+  kick.appendChild(el("h2","card-title","Kick"));
+  [["B","b","schwach – schnell, wenig Schaden"],
+   ["A","a","mittel"],
+   ["R","r","stark – langsam, viel Schaden"]].forEach(([le,cl,txt]) => {
+    const row = el("div","keyrow");
+    row.appendChild(keyChip(le, cl));
+    row.appendChild(el("span",null,txt));
+    kick.appendChild(row);
+  });
+  out.push(kick);
+
+  const rules = el("article","card legend-card");
+  rules.appendChild(el("h2","card-title","Richtungen"));
+  rules.appendChild(el("p",null,'Alle Pfeile gelten für <b>Blick nach rechts</b>. Vorwärts heißt immer „zum Gegner hin\", zurück „von ihm weg\".'));
+  const ex = el("div","seq");
+  ex.appendChild(arrow("d")); ex.appendChild(arrow("df")); ex.appendChild(arrow("f"));
+  rules.appendChild(ex);
+  rules.appendChild(el("p",null,'Drei Knöpfe nebeneinander heißen: <b>einer davon genügt</b>.'));
+  out.push(rules);
+
+  const charge = el("article","card legend-card");
+  charge.appendChild(el("h2","card-title","Ladebewegung"));
+  const cbox = el("div","seq");
+  const ch = el("div","charge");
+  ch.appendChild(arrow("b"));
+  ch.appendChild(el("span",null,"ca. 2 Sek. halten"));
+  cbox.appendChild(ch);
+  cbox.appendChild(el("span","op","+"));
+  cbox.appendChild(arrow("f"));
+  charge.appendChild(cbox);
+  charge.appendChild(el("p",null,'Rot heißt <b>halten</b>: Richtung ca. zwei Sekunden gedrückt lassen, dann die Folgeeingabe. Blocken und Ducken laden mit – die Ladung geht dabei nicht verloren.'));
+  out.push(charge);
+
+  const version = el("article","card legend-card");
+  version.appendChild(el("h2","card-title","Stand"));
+  version.appendChild(el("p",null,'<b>Super Street Fighter II – The New Challengers</b> (SNES). Super-Combos gibt es in dieser Fassung noch nicht, die kamen erst mit Super Turbo.'));
+  out.push(version);
+
+  return out;
+}
+
+/* =========================================================================
+   Zustand & Anzeige
+   ========================================================================= */
+
+const stage = document.getElementById("stage");
+const view  = document.getElementById("view");
+let currentId = "ryu";
+let currentTab = "specials";
+
+function store(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function recall(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+function render(){
+  const f = ALL.find(c => c.id === currentId) || ALL[0];
+
+  document.getElementById("who-name").textContent = f.name;
+  document.getElementById("who-flag").textContent = f.flag;
+
+  const nodes = currentTab === "specials" ? viewSpecials(f)
+              : currentTab === "training" ? viewTraining(f)
+              : viewKeys();
+
+  view.textContent = "";
+  nodes.forEach((n, i) => { n.style.setProperty("--i", i); view.appendChild(n); });
+
+  document.querySelectorAll(".chip").forEach(c =>
+    c.setAttribute("aria-pressed", String(c.dataset.id === f.id)));
+  document.querySelectorAll(".tabs button").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.tab === currentTab)));
+
   store("ssf2-fighter", f.id);
+  store("ssf2-tab", currentTab);
+  fit();
 }
 
-function buildRoster(){
-  const host = document.getElementById("roster");
-  ROSTER.forEach(g => {
-    host.appendChild(el("h2",null,g.group));
-    const row = el("div","chips");
-    g.chars.forEach(c => {
-      const b = el("button","chip");
-      b.type = "button";
-      b.dataset.id = c.id;
-      b.setAttribute("aria-pressed","false");
-      b.innerHTML = '<span class="flag">' + c.flag + '</span>' + c.name;
-      b.addEventListener("click", () => {
-        renderFighter(c.id);
-        document.getElementById("picker").open = false;
-      });
-      row.appendChild(b);
-    });
-    host.appendChild(row);
+/* Skaliert den Inhalt so lange herunter, bis er ohne Scrollen auf den
+   Screen passt. Von groß nach klein, damit die erste passende Stufe
+   auch die größtmögliche ist. */
+const MIN_READABLE = 0.82;
+
+function fit(){
+  stage.classList.remove("overflowing", "tight");
+
+  let best = largestFitting();
+  if(best === null || best < MIN_READABLE){
+    stage.classList.add("tight");
+    const tighter = largestFitting();
+    if(tighter === null || (best !== null && tighter <= best)){
+      stage.classList.remove("tight");
+      apply(best);
+      return;
+    }
+    best = tighter;
+  }
+  apply(best);
+}
+
+function largestFitting(){
+  const fits = () =>
+    stage.scrollHeight <= stage.clientHeight && stage.scrollWidth <= stage.clientWidth;
+  for(let s = 1.40; s >= 0.42; s -= 0.03){
+    stage.style.setProperty("--fs", s.toFixed(2));
+    if(fits()) return s;
+  }
+  return null;
+}
+
+function apply(scale){
+  if(scale === null){
+    stage.style.setProperty("--fs", "0.42");
+    stage.classList.add("overflowing");
+  }else{
+    stage.style.setProperty("--fs", scale.toFixed(2));
+  }
+}
+
+function setFighter(id){ currentId = id; render(); }
+function stepFighter(delta){
+  const i = ALL.findIndex(c => c.id === currentId);
+  setFighter(ALL[(i + delta + ALL.length) % ALL.length].id);
+}
+function setTab(tab){ currentTab = tab; render(); }
+
+/* =========================================================================
+   Bedienung
+   ========================================================================= */
+
+const sheet = document.getElementById("sheet");
+
+function buildSheet(){
+  const host = document.getElementById("sheet-grid");
+  ALL.forEach(c => {
+    const b = el("button","chip");
+    b.type = "button";
+    b.dataset.id = c.id;
+    b.setAttribute("aria-pressed","false");
+    b.innerHTML = '<span class="flag">' + c.flag + '</span><span class="nm">' + c.name + '</span>';
+    b.addEventListener("click", () => { setFighter(c.id); closeSheet(); });
+    host.appendChild(b);
   });
 }
+function openSheet(){ sheet.hidden = false; }
+function closeSheet(){ sheet.hidden = true; }
 
-/* ---------------- Einstellungen ---------------- */
-
-function store(key, val){
-  try{ localStorage.setItem(key, val); }catch(e){}
-}
-function recall(key){
-  try{ return localStorage.getItem(key); }catch(e){ return null; }
-}
-
-function setSize(size){
-  document.documentElement.dataset.size = size;
-  ["s","m","l"].forEach(s => {
-    document.getElementById("size-" + s).setAttribute("aria-pressed", String(s === size));
-  });
-  store("ssf2-size", size);
-}
-
-["s","m","l"].forEach(s => {
-  document.getElementById("size-" + s).addEventListener("click", () => setSize(s));
-});
-document.getElementById("size-s").style.fontSize = ".65rem";
-document.getElementById("size-l").style.fontSize = ".95rem";
+document.getElementById("who").addEventListener("click", openSheet);
+document.getElementById("sheet-close").addEventListener("click", closeSheet);
+document.getElementById("prev").addEventListener("click", () => stepFighter(-1));
+document.getElementById("next").addEventListener("click", () => stepFighter(1));
+document.querySelectorAll(".tabs button").forEach(b =>
+  b.addEventListener("click", () => setTab(b.dataset.tab)));
 
 document.getElementById("fs").addEventListener("click", () => {
-  if(document.fullscreenElement){
-    document.exitFullscreen();
-  }else if(document.documentElement.requestFullscreen){
+  if(document.fullscreenElement) document.exitFullscreen();
+  else if(document.documentElement.requestFullscreen)
     document.documentElement.requestFullscreen().catch(() => {});
-  }
-});
-
-const legend = document.getElementById("legend");
-document.getElementById("legend-toggle").addEventListener("click", () => {
-  const open = legend.dataset.open !== "true";
-  legend.dataset.open = String(open);
-  document.getElementById("legend-toggle").setAttribute("aria-expanded", String(open));
-  document.getElementById("legend-arrow").textContent = open ? "▼" : "▲";
-  store("ssf2-legend", open ? "1" : "0");
 });
 
 document.addEventListener("keydown", e => {
-  if(e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-  const cur = ALL.findIndex(c => c.id === (recall("ssf2-fighter") || ALL[0].id));
-  const next = (cur + (e.key === "ArrowRight" ? 1 : ALL.length - 1)) % ALL.length;
-  renderFighter(ALL[next].id);
+  if(e.key === "Escape" && !sheet.hidden){ closeSheet(); return; }
+  if(e.key === "ArrowLeft")  stepFighter(-1);
+  if(e.key === "ArrowRight") stepFighter(1);
+  if(e.key === "1") setTab("specials");
+  if(e.key === "2") setTab("training");
+  if(e.key === "3") setTab("keys");
 });
 
-/* ---------------- Start ---------------- */
+let resizeTimer;
+addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(fit, 120);
+});
+addEventListener("orientationchange", () => setTimeout(fit, 250));
 
-buildRoster();
-setSize(recall("ssf2-size") || "m");
-if(recall("ssf2-legend") === "1"){ document.getElementById("legend-toggle").click(); }
-const remembered = recall("ssf2-fighter");
-renderFighter(remembered || "ryu");
-document.getElementById("picker").open = !remembered;
+/* =========================================================================
+   Start
+   ========================================================================= */
+
+buildSheet();
+currentId  = recall("ssf2-fighter") || "ryu";
+currentTab = recall("ssf2-tab") || "specials";
+if(!ALL.some(c => c.id === currentId)) currentId = "ryu";
+if(!["specials","training","keys"].includes(currentTab)) currentTab = "specials";
+render();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 </script>
 </body>
 </html>
